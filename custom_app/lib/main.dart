@@ -66,6 +66,51 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            Container(    //put DrawerHeader in a container so it doesn't take up 20% of the screen
+              height: 80.0,
+              child: DrawerHeader(
+                child: Text('Custom!'),
+                decoration:BoxDecoration(
+                  color: Colors.blue,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Page 1'),
+              onTap: (){
+                _incrementCounter();
+                //just incrementing the counter for now to make sure that it
+                //works. Will update once we have other pages
+
+                Navigator.pop(context); //closes NavDrawer
+                //Navigator.push(
+                // context,
+                // MaterialPageRoute(builder: (context) => PageName()),
+                //);
+              },
+            ),
+            ListTile(
+              title: Text('Page 2'),
+              onTap: (){
+                _incrementCounter(); //Page 2 adds 2 to diffrentiate for now
+                _incrementCounter();
+
+                Navigator.pop(context); //closes NavDrawer
+                //Navigator.push(
+                // context,
+                // MaterialPageRoute(builder: (context) => PageName()),
+                //);
+              },
+            ),
+            //To add more pages, copy and paste the ListTile then update text
+            //and MaterialPageRoute to the correct name and page.
+          ],
+        ),
+      ),
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
