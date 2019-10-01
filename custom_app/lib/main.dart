@@ -18,10 +18,16 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.red,
+
+        primarySwatch: Colors.blueGrey,
+        //buttonColor: Colors.black12,
+        //backgroundColor: Colors.orange,
+        //primaryColor: Colors.black26,    broken?
+        //secondaryHeaderColor: Colors.orangeAccent,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Custom'),
     );
+
   }
 }
 
@@ -75,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: DrawerHeader(
                 child: Text('Custom!'),
                 decoration:BoxDecoration(
-                  color: Colors.blue,
+                  color: Color(0xFF344955),
                 ),
               ),
             ),
@@ -136,19 +142,31 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+            RaisedButton(
+              onPressed: () {},
+              color: Color(0xFFF9AA33),
+              child: const Text(
+                  'Smoothie',
+                  style: TextStyle(fontSize: 50)
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+            const SizedBox(height: 30),
+            RaisedButton(
+              onPressed: () {},
+              color: Color(0xFFF9AA33),
+              child: const Text(
+                  'Salad',
+                  style: TextStyle(fontSize: 50)
+              ),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
+        backgroundColor: Color(0xFFF9AA33),
         tooltip: 'Increment',
+        //backgroundColor: Colors.orange,
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
