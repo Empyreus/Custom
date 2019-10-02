@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './pages/cas.dart';
 
 void main() => runApp(MyApp());
 
@@ -49,24 +50,23 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             ListTile(
-              title: Text('Page 1'),
+              title: Text('Home'),
               onTap: (){
                 Navigator.pop(context); //closes NavDrawer
                 //Navigator.push(
-                // context,
-                // MaterialPageRoute(builder: (context) => PageName()),
+                  //context,
+                  //MaterialPageRoute(builder: (context) => MyHomePage()),
                 //);
               },
             ),
             ListTile(
-              title: Text('Page 2'),
+              title: Text('Smoothie'),
               onTap: (){
-
                 Navigator.pop(context); //closes NavDrawer
-                //Navigator.push(
-                // context,
-                // MaterialPageRoute(builder: (context) => PageName()),
-                //);
+                Navigator.push(
+                 context,
+                 MaterialPageRoute(builder: (context) => CreateASmoothie()),
+                );
               },
             ),
             //To add more pages, copy and paste the ListTile then update text
@@ -82,7 +82,12 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             RaisedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CreateASmoothie()),
+                );
+              },
               color: Color(0xFFF9AA33),
               child: const Text(
                   'Smoothie',
