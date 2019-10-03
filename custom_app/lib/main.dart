@@ -16,23 +16,18 @@ class MyApp extends StatelessWidget {
         //primaryColor: Colors.black26,    broken?
         //secondaryHeaderColor: Colors.orangeAccent,
       ),
-      home: MyHomePage(title: 'Custom'),
+      home: Home(),
     );
 
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
+class Home extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomeState createState() => _HomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-
+class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 //Navigator.push(
                   //context,
                   //MaterialPageRoute(builder: (context) => MyHomePage()),
-                //);
+                //);    //Already on the page so no need to navigate there
               },
             ),
             ListTile(
@@ -75,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Home'),
       ),
       body: Center(
         child: Column(
@@ -99,7 +94,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreateASmoothie()),
+          );
+        },
         backgroundColor: Color(0xFFF9AA33),
         tooltip: 'Increment',
         //backgroundColor: Colors.orange,
