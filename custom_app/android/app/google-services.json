@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "778255859833",
+    "firebase_url": "https://custom-65323.firebaseio.com",
+    "project_id": "custom-65323",
+    "storage_bucket": "custom-65323.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:778255859833:android:87f1f9ef92573ef6dc54a8",
+        "android_client_info": {
+          "package_name": "customshakes.custom_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "778255859833-fc7it7mnnucnppc6k2tghb2qhqebdfid.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvinQcqzXuUtj3_J5LCktUYWuVwzoRZnE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "778255859833-fc7it7mnnucnppc6k2tghb2qhqebdfid.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
