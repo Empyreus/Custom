@@ -89,7 +89,6 @@ class _HomeState extends State<Home> {
                   style: TextStyle(fontSize: 50)
               ),
             ),
-            const SizedBox(height: 30),
           ],
         ),
       ),
