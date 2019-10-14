@@ -4,8 +4,20 @@
 
 import 'package:flutter/material.dart';
 
-final _addedFruits = <String>[];
-final _addedBases = <String>[];
+class ShakeStruct {
+
+  ShakeStruct(this._name, this._bases, this._fruits );
+
+  var _name          = "";
+  var _bases         = <String>[];
+  var _fruits        = <String>[];
+  var _vegtables     = <String>[];
+  var _supplements   = <String>[];
+}
+
+final _completedShakes = <ShakeStruct>[];
+var _addedFruits     = <String>[];
+var _addedBases      = <String>[""];
 
 void main() => runApp(MaterialApp(
   title: 'Named Routes Demo',
@@ -14,6 +26,7 @@ void main() => runApp(MaterialApp(
     '/': (context) => MyApp(),
     '/second': (context) => SelectBase(),
     '/third': (context) => SelectFruit(),
+    '/fourth': (context) => Checkout()
   }
 ));
 
@@ -28,6 +41,7 @@ class MyApp extends StatelessWidget {
           title: new Text("Custom Shakes")
         ),
         body: Center(
+          child: Cart(),
         ),
         floatingActionButton: FloatingActionButton (
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
@@ -40,6 +54,76 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+/*
+ * Select Base
+ */
+class Cart extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Custom Shakes',
+      theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
+      home: Scaffold(
+        body: Center(
+            child: Carts()
+        ),
+      ),
+    );
+  }
+}
+
+class CartState extends State<Carts> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _buildCart(),
+    );
+  }
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+
+  Widget _buildCart(){
+    return ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemCount: _completedShakes.length*2,
+        itemBuilder: (context, i) {
+          if (i.isOdd)
+            return Divider();
+          final index = i ~/ 2;
+          return _buildCartRow(_completedShakes[index]._name);
+        }
+    );
+  }
+
+  Widget _buildCartRow(String base) {
+    final bool alreadyAdded = _addedBases.contains(base);
+    return ListTile(
+        title: Text(
+          base,
+          style: _biggerFont,
+        ),
+        trailing: Icon(
+          alreadyAdded ? Icons.add_circle : Icons.add_circle_outline,
+          color: alreadyAdded ? Color.fromRGBO(249, 170, 51, 1.0) : null,
+        ),
+        onTap: () {
+          setState(() {
+            if (alreadyAdded) {
+              _addedBases[0] = "";
+            }
+            else {
+              _addedBases[0] = base;
+            }
+          });
+        }
+    );
+  }
+}
+
+class Carts extends StatefulWidget {
+  @override
+  CartState createState() => CartState();
 }
 
 /*
@@ -73,6 +157,8 @@ class BasesState extends State<Bases> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(color: Colors.white),
+        automaticallyImplyLeading: false,
         title: Text('Protein Shake Bases'),
       ),
       body: _buildBases(),
@@ -108,10 +194,10 @@ class BasesState extends State<Bases> {
       onTap: () {
         setState(() {
           if (alreadyAdded) {
-            _addedBases.remove(base);
+            _addedBases[0] = "";
           }
           else {
-            _addedBases.add(base);
+            _addedBases[0] = base;
           }
         });
       }
@@ -140,7 +226,7 @@ class SelectFruit extends StatelessWidget {
         floatingActionButton: FloatingActionButton (
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
           onPressed: () {
-            Navigator.pushNamed(context, '/second');
+            Navigator.pushNamed(context, '/fourth');
           },
           tooltip: 'Select Bases',
           child: Icon(Icons.check),
@@ -155,7 +241,7 @@ class FruitsState extends State<Fruits> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Protein Shake Bases'),
+        title: Text('Protein Shake Fruits'),
       ),
       body: _buildFruits(),
     );
@@ -184,7 +270,7 @@ class FruitsState extends State<Fruits> {
           style: _biggerFont,
         ),
         trailing: Icon(
-          alreadyAdded ? Icons.add_circle : Icons.add_circle_outline,
+          alreadyAdded ? Icons.check_box : Icons.check_box_outline_blank,
           color: alreadyAdded ? Color.fromRGBO(249, 170, 51, 1.0) : null,
         ),
         onTap: () {
@@ -204,4 +290,76 @@ class FruitsState extends State<Fruits> {
 class Fruits extends StatefulWidget {
   @override
   FruitsState createState() => FruitsState();
+}
+
+/*
+ * Checkout
+ */
+class Checkout extends StatelessWidget {
+  final _myShake = new ShakeStruct("Temp", _addedBases, _addedFruits);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Custom Shakes',
+      theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
+      home: Scaffold(
+        body: Center(
+            child: Checkouts()
+        ),
+        floatingActionButton: FloatingActionButton (
+          backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
+          onPressed: () {
+            _completedShakes.add(_myShake);
+            _addedFruits = <String>[];
+            _addedBases = <String>[""];
+            Navigator.pushNamed(context, '/');
+          },
+          tooltip: 'Checkout',
+          child: Icon(Icons.done_all),
+        ),
+      ),
+    );
+  }
+}
+
+class CheckoutState extends State<Checkouts> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Checkout'),
+      ),
+      body: _buildCheckout(),
+    );
+  }
+  final _selected = _addedBases + _addedFruits;
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+
+  Widget _buildCheckout(){
+    return ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemCount: _selected.length*2,
+        itemBuilder: (context, i) {
+          if (i.isOdd)
+            return Divider();
+          final index = i ~/ 2;
+          return _buildCheckoutRow(_selected[index]);
+        }
+    );
+  }
+
+  Widget _buildCheckoutRow(String fruit) {
+    return ListTile(
+        title: Text(
+          fruit,
+          style: _biggerFont,
+        ),
+    );
+  }
+}
+
+class Checkouts extends StatefulWidget {
+  @override
+  CheckoutState createState() => CheckoutState();
 }
