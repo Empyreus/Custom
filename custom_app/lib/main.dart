@@ -22,6 +22,7 @@ final _supplements = <String>["Whey Protein", "Soy Protein", "Creatine", "Caffei
 final _completedShakes = <ShakeStruct>[];
 final _biggerFont      = const TextStyle(fontSize: 18.0);
 
+var _name            = "";
 var _addedFruits     = <String>[];
 var _addedBases      = <String>[""];
 
@@ -97,7 +98,9 @@ class CartState extends State<Carts> {
           if (i.isOdd)
             return Divider();
           final index = i ~/ 2;
-          return _buildCartRow(_completedShakes[index]._fruits[index]);
+          if (_completedShakes[index]._name == "")
+            return _buildCartRow(_completedShakes[index]._fruits[0]);
+          return _buildCartRow(_completedShakes[index]._name);
         }
     );
   }
@@ -288,7 +291,7 @@ class Fruits extends StatefulWidget {
  * Checkout
  */
 class Checkout extends StatelessWidget {
-  final _myShake = new ShakeStruct("temp", _addedBases, _addedFruits);
+
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +302,9 @@ class Checkout extends StatelessWidget {
         floatingActionButton: FloatingActionButton (
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
           onPressed: () {
+            var _myShake = new ShakeStruct(_name, _addedBases, _addedFruits);
             _completedShakes.add(_myShake);
+            _name = "";
             _addedFruits = <String>[];
             _addedBases = <String>[""];
             Navigator.pushNamed(context, '/');
@@ -321,12 +326,13 @@ class CheckoutState extends State<Checkouts> {
 //      body: _buildCheckout(),
         body: Column(
           children: <Widget>[
-            new TextFormField(
+            new TextField(
               decoration: InputDecoration(
-                labelText: 'Enter Shake Name',
+                border: OutlineInputBorder(),
+                labelText: 'Input Shake Name',
               ),
-              onSaved: (String value) {
-
+              onChanged: (text) {
+                _name = text;
               },
             ),
             new Expanded(child: _buildCheckout())
