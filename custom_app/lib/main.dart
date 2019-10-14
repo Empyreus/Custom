@@ -15,9 +15,16 @@ class ShakeStruct {
   var _supplements   = <String>[];
 }
 
+final _bases       = <String>["Whole Milk", "Heavy Cream", "2% Milk", "Fat-Free Milk", "Soy Milk", "Almond Milk", "Coconut Milk", "Lactose Milk"];
+final _fruits      = <String>["Mangos", "Strawberries", "Bananas", "Blueberries", "Spinach", "Carrots",  ];
+final _supplements = <String>["Whey Protein", "Soy Protein", "Creatine", "Caffeine", "Greek Yogurt"];
+
 final _completedShakes = <ShakeStruct>[];
+final _biggerFont      = const TextStyle(fontSize: 18.0);
+
 var _addedFruits     = <String>[];
 var _addedBases      = <String>[""];
+
 
 void main() => runApp(MaterialApp(
   title: 'Named Routes Demo',
@@ -81,7 +88,6 @@ class CartState extends State<Carts> {
       body: _buildCart(),
     );
   }
-  final _biggerFont = const TextStyle(fontSize: 18.0);
 
   Widget _buildCart(){
     return ListView.builder(
@@ -91,7 +97,7 @@ class CartState extends State<Carts> {
           if (i.isOdd)
             return Divider();
           final index = i ~/ 2;
-          return _buildCartRow(_completedShakes[index]._name);
+          return _buildCartRow(_completedShakes[index]._fruits[index]);
         }
     );
   }
@@ -132,10 +138,7 @@ class Carts extends StatefulWidget {
 class SelectBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Custom Shakes',
-      theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
-      home: Scaffold(
+      return Scaffold(
         body: Center(
           child: Bases()
         ),
@@ -147,8 +150,7 @@ class SelectBase extends StatelessWidget {
           tooltip: 'Select Bases',
           child: Icon(Icons.check),
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -157,15 +159,11 @@ class BasesState extends State<Bases> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(color: Colors.white),
-        automaticallyImplyLeading: false,
         title: Text('Protein Shake Bases'),
       ),
       body: _buildBases(),
     );
   }
-  final _bases = <String>["Whole Milk", "Soy Milk", "Almond Milk", ];
-  final _biggerFont = const TextStyle(fontSize: 18.0);
 
   Widget _buildBases(){
     return ListView.builder(
@@ -216,10 +214,7 @@ class Bases extends StatefulWidget {
 class SelectFruit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Custom Shakes',
-      theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
-      home: Scaffold(
+      return Scaffold(
         body: Center(
             child: Fruits()
         ),
@@ -231,8 +226,7 @@ class SelectFruit extends StatelessWidget {
           tooltip: 'Select Bases',
           child: Icon(Icons.check),
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -246,8 +240,6 @@ class FruitsState extends State<Fruits> {
       body: _buildFruits(),
     );
   }
-  final _fruits = <String>["Mangos", "Strawberries", "Bananas", ];
-  final _biggerFont = const TextStyle(fontSize: 18.0);
 
   Widget _buildFruits(){
     return ListView.builder(
@@ -296,14 +288,11 @@ class Fruits extends StatefulWidget {
  * Checkout
  */
 class Checkout extends StatelessWidget {
-  final _myShake = new ShakeStruct("Temp", _addedBases, _addedFruits);
+  final _myShake = new ShakeStruct("temp", _addedBases, _addedFruits);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Custom Shakes',
-      theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
-      home: Scaffold(
+    return Scaffold(
         body: Center(
             child: Checkouts()
         ),
@@ -318,8 +307,7 @@ class Checkout extends StatelessWidget {
           tooltip: 'Checkout',
           child: Icon(Icons.done_all),
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -330,11 +318,23 @@ class CheckoutState extends State<Checkouts> {
       appBar: AppBar(
         title: Text('Checkout'),
       ),
-      body: _buildCheckout(),
+//      body: _buildCheckout(),
+        body: Column(
+          children: <Widget>[
+            new TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Enter Shake Name',
+              ),
+              onSaved: (String value) {
+
+              },
+            ),
+            new Expanded(child: _buildCheckout())
+          ],
+        )
     );
   }
   final _selected = _addedBases + _addedFruits;
-  final _biggerFont = const TextStyle(fontSize: 18.0);
 
   Widget _buildCheckout(){
     return ListView.builder(
