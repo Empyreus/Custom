@@ -101,7 +101,8 @@ class CartState extends State<Carts> {
           final index = i ~/ 2;
           if (_completedShakes[index]._name == "")
             return _buildCartRow(_completedShakes[index]._fruits[0]);
-          return _buildCartRow(_completedShakes[index]._name);        }
+          return _buildCartRow(_completedShakes[index]._name);
+        }
     );
   }
 
