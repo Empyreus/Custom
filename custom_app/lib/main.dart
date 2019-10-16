@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ShakeStruct {
 
   ShakeStruct(this._name, this._bases, this._fruits );
-
   var _name          = "";
   var _bases         = <String>[];
   var _fruits        = <String>[];
@@ -22,8 +22,10 @@ final _supplements = <String>["Whey Protein", "Soy Protein", "Creatine", "Caffei
 final _completedShakes = <ShakeStruct>[];
 final _biggerFont      = const TextStyle(fontSize: 18.0);
 
+var _name            = "";
+final _initialBase = "";
 var _addedFruits     = <String>[];
-var _addedBases      = <String>[""];
+var _addedBases      = <String>[_initialBase];
 
 
 void main() => runApp(MaterialApp(
@@ -97,8 +99,9 @@ class CartState extends State<Carts> {
           if (i.isOdd)
             return Divider();
           final index = i ~/ 2;
-          return _buildCartRow(_completedShakes[index]._fruits[index]);
-        }
+          if (_completedShakes[index]._name == "")
+            return _buildCartRow(_completedShakes[index]._fruits[0]);
+          return _buildCartRow(_completedShakes[index]._name);        }
     );
   }
 
@@ -145,7 +148,20 @@ class SelectBase extends StatelessWidget {
         floatingActionButton: FloatingActionButton (
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
           onPressed: () {
-            Navigator.pushNamed(context, '/third');
+            if(_bases[0] != _initialBase){
+              Navigator.pushNamed(context, '/third');
+            }
+            else{
+              Fluttertoast.showToast(
+                  msg: "This is Center Short Toast",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIos: 1,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0
+              );
+            }
           },
           tooltip: 'Select Bases',
           child: Icon(Icons.check),
@@ -288,7 +304,7 @@ class Fruits extends StatefulWidget {
  * Checkout
  */
 class Checkout extends StatelessWidget {
-  final _myShake = new ShakeStruct("temp", _addedBases, _addedFruits);
+
 
   @override
   Widget build(BuildContext context) {
@@ -299,10 +315,12 @@ class Checkout extends StatelessWidget {
         floatingActionButton: FloatingActionButton (
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
           onPressed: () {
+            var _myShake = new ShakeStruct(_name, _addedBases, _addedFruits);
             _completedShakes.add(_myShake);
+            _name = "";
             _addedFruits = <String>[];
             _addedBases = <String>[""];
-            Navigator.pushNamed(context, '/');
+            Navigator.popUntil(context, ModalRoute.withName('/'));
           },
           tooltip: 'Checkout',
           child: Icon(Icons.done_all),
@@ -321,12 +339,13 @@ class CheckoutState extends State<Checkouts> {
 //      body: _buildCheckout(),
         body: Column(
           children: <Widget>[
-            new TextFormField(
+            new TextField(
               decoration: InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: 'Enter Shake Name',
               ),
-              onSaved: (String value) {
-
+              onChanged: (text) {
+                _name = text;
               },
             ),
             new Expanded(child: _buildCheckout())
