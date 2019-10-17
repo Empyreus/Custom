@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ShakeStruct {
 
   ShakeStruct(this._name, this._bases, this._fruits );
-
   var _name          = "";
   var _bases         = <String>[];
   var _fruits        = <String>[];
@@ -23,8 +23,9 @@ final _completedShakes = <ShakeStruct>[];
 final _biggerFont      = const TextStyle(fontSize: 18.0);
 
 var _name            = "";
+final _initialBase = "";
 var _addedFruits     = <String>[];
-var _addedBases      = <String>[""];
+var _addedBases      = <String>[_initialBase];
 
 
 void main() => runApp(MaterialApp(
@@ -148,7 +149,20 @@ class SelectBase extends StatelessWidget {
         floatingActionButton: FloatingActionButton (
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
           onPressed: () {
-            Navigator.pushNamed(context, '/third');
+            if(_bases[0] != _initialBase){
+              Navigator.pushNamed(context, '/third');
+            }
+            else{
+              Fluttertoast.showToast(
+                  msg: "This is Center Short Toast",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIos: 1,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0
+              );
+            }
           },
           tooltip: 'Select Bases',
           child: Icon(Icons.check),
@@ -307,7 +321,7 @@ class Checkout extends StatelessWidget {
             _name = "";
             _addedFruits = <String>[];
             _addedBases = <String>[""];
-            Navigator.pushNamed(context, '/');
+            Navigator.popUntil(context, ModalRoute.withName('/'));
           },
           tooltip: 'Checkout',
           child: Icon(Icons.done_all),
@@ -329,7 +343,7 @@ class CheckoutState extends State<Checkouts> {
             new TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Input Shake Name',
+                labelText: 'Enter Shake Name',
               ),
               onChanged: (text) {
                 _name = text;
