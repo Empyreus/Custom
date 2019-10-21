@@ -14,12 +14,24 @@ class ShakeStruct {
   var _vegtables     = <String>[];
   var _supplements   = <String>[];
 }
+class Nutritional {
+
+  Nutritional(this._cal);
+
+  var _cal  = 0;
+}
 
 final _bases       = <String>["Whole Milk", "Heavy Cream", "2% Milk", "Fat-Free Milk", "Soy Milk", "Almond Milk", "Coconut Milk", "Lactose Milk"];
 final _fruits      = <String>["Mangos", "Strawberries", "Bananas", "Blueberries", "Spinach", "Carrots",  ];
 final _supplements = <String>["Whey Protein", "Soy Protein", "Creatine", "Caffeine", "Greek Yogurt"];
 
+List<String> _frts            = ["Mangos", "Strawberries", "Bananas", "Blueberries", "Spinach", "Carrots"];
+List<Nutritional> _val        = [Nutritional(1), Nutritional(2), Nutritional(3), Nutritional(4), Nutritional(5), Nutritional(6),];
+Map<String, Nutritional> _nut = new Map.fromIterables(_frts, _val);
+var _stats                    = [0];
+
 final _completedShakes = <ShakeStruct>[];
+final _completedStats = <Nutritional>[];
 final _biggerFont      = const TextStyle(fontSize: 18.0);
 
 var _name            = "";
@@ -75,7 +87,7 @@ class Cart extends StatelessWidget {
       theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
       home: Scaffold(
         body: Center(
-            child: Carts()
+            child: Carts(),
         ),
       ),
     );
@@ -99,17 +111,17 @@ class CartState extends State<Carts> {
             return Divider();
           final index = i ~/ 2;
           if (_completedShakes[index]._name == "")
-            return _buildCartRow(_completedShakes[index]._fruits[0]);
-          return _buildCartRow(_completedShakes[index]._name);
+            return _buildCartRow(_completedShakes[index]._fruits[0], _completedStats[index]._cal);
+          return _buildCartRow(_completedShakes[index]._name, _completedStats[index]._cal);
         }
     );
   }
 
-  Widget _buildCartRow(String base) {
+  Widget _buildCartRow(String base, int cal) {
     final bool alreadyAdded = _addedBases.contains(base);
     return ListTile(
         title: Text(
-          base,
+          base + "- Calories: " + cal.toString(),
           style: _biggerFont,
         ),
         trailing: Icon(
@@ -272,9 +284,11 @@ class FruitsState extends State<Fruits> {
           setState(() {
             if (alreadyAdded) {
               _addedFruits.remove(fruit);
+              _stats[0] -= _nut[fruit]._cal;
             }
             else {
               _addedFruits.add(fruit);
+              _stats[0] += _nut[fruit]._cal;
             }
           });
         }
@@ -303,7 +317,10 @@ class Checkout extends StatelessWidget {
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
           onPressed: () {
             var _myShake = new ShakeStruct(_name, _addedBases, _addedFruits);
+            var _myStats = new Nutritional(_stats[0]);
             _completedShakes.add(_myShake);
+            _completedStats.add(_myStats);
+            _stats[0] = 0;
             _name = "";
             _addedFruits = <String>[];
             _addedBases = <String>[""];
