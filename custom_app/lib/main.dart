@@ -199,7 +199,7 @@ class BasesState extends State<Bases> {
         style: _biggerFont,
       ),
       trailing: Icon(
-        alreadyAdded ? Icons.add_circle : Icons.add_circle_outline,
+        alreadyAdded ? Icons.check_circle : Icons.add_circle_outline,
         color: alreadyAdded ? Color.fromRGBO(249, 170, 51, 1.0) : null,
       ),
       onTap: () {
