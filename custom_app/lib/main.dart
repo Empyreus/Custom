@@ -17,7 +17,6 @@ class ShakeStruct {
 class Nutritional {
 
   Nutritional(this._cal);
-
   var _cal  = 0;
 }
 
@@ -119,26 +118,11 @@ class CartState extends State<Carts> {
   }
 
   Widget _buildCartRow(String base, int cal) {
-    final bool alreadyAdded = _addedBases.contains(base);
     return ListTile(
         title: Text(
           base + "- Calories: " + cal.toString(),
           style: _biggerFont,
         ),
-        trailing: Icon(
-          alreadyAdded ? Icons.add_circle : Icons.add_circle_outline,
-          color: alreadyAdded ? Color.fromRGBO(249, 170, 51, 1.0) : null,
-        ),
-        onTap: () {
-          setState(() {
-            if (alreadyAdded) {
-              _addedBases[0] = "";
-            }
-            else {
-              _addedBases[0] = base;
-            }
-          });
-        }
     );
   }
 }
