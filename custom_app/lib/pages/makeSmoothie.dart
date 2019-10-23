@@ -4,19 +4,51 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-part 'pages/smoothie.dart';
 
+class ShakeStruct {
+
+  ShakeStruct(this._name, this._bases, this._fruits );
+  var _name          = "";
+  var _bases         = <String>[];
+  var _fruits        = <String>[];
+  var _vegtables     = <String>[];
+  var _supplements   = <String>[];
+}
+class Nutritional {
+
+  Nutritional(this._cal);
+
+  var _cal  = 0;
+}
+
+final _bases       = <String>["Whole Milk", "Heavy Cream", "2% Milk", "Fat-Free Milk", "Soy Milk", "Almond Milk", "Coconut Milk", "Lactose Milk"];
+final _fruits      = <String>["Mangos", "Strawberries", "Bananas", "Blueberries", "Spinach", "Carrots",  ];
+final _supplements = <String>["Whey Protein", "Soy Protein", "Creatine", "Caffeine", "Greek Yogurt"];
+
+List<String> _frts            = ["Mangos", "Strawberries", "Bananas", "Blueberries", "Spinach", "Carrots"];
+List<Nutritional> _val        = [Nutritional(1), Nutritional(2), Nutritional(3), Nutritional(4), Nutritional(5), Nutritional(6),];
+Map<String, Nutritional> _nut = new Map.fromIterables(_frts, _val);
+var _stats                    = [0];
+
+final _completedShakes = <ShakeStruct>[];
+final _completedStats = <Nutritional>[];
+final _biggerFont      = const TextStyle(fontSize: 18.0);
+
+var _name            = "";
+final _initialBase = "";
+var _addedFruits     = <String>[];
+var _addedBases      = <String>[_initialBase];
 
 
 void main() => runApp(MaterialApp(
-  title: 'Named Routes Demo',
-  initialRoute: '/',
-  routes: {
-    '/': (context) => MyApp(),
-    '/second': (context) => SelectBase(),
-    '/third': (context) => SelectFruit(),
-    '/fourth': (context) => Checkout()
-  }
+    title: 'Named Routes Demo',
+    initialRoute: '/',
+    routes: {
+      '/': (context) => MyApp(),
+      '/second': (context) => SelectBase(),
+      '/third': (context) => SelectFruit(),
+      '/fourth': (context) => Checkout()
+    }
 ));
 
 class MyApp extends StatelessWidget {
@@ -27,7 +59,7 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
       home: Scaffold(
         appBar: new AppBar(
-          title: new Text("Custom Shakes")
+            title: new Text("Custom Shakes")
         ),
         body: Center(
           child: Cart(),
@@ -56,7 +88,7 @@ class Cart extends StatelessWidget {
       theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
       home: Scaffold(
         body: Center(
-            child: Carts(),
+          child: Carts(),
         ),
       ),
     );
@@ -122,32 +154,32 @@ class Carts extends StatefulWidget {
 class SelectBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
-        body: Center(
+    return Scaffold(
+      body: Center(
           child: Bases()
-        ),
-        floatingActionButton: FloatingActionButton (
-          backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
-          onPressed: () {
-            if(_bases[0] != _initialBase){
-              Navigator.pushNamed(context, '/third');
-            }
-            else{
-              Fluttertoast.showToast(
-                  msg: "This is Center Short Toast",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIos: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
-            }
-          },
-          tooltip: 'Select Bases',
-          child: Icon(Icons.check),
-        ),
-      );
+      ),
+      floatingActionButton: FloatingActionButton (
+        backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
+        onPressed: () {
+          if(_bases[0] != _initialBase){
+            Navigator.pushNamed(context, '/third');
+          }
+          else{
+            Fluttertoast.showToast(
+                msg: "This is Center Short Toast",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIos: 1,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0
+            );
+          }
+        },
+        tooltip: 'Select Bases',
+        child: Icon(Icons.check),
+      ),
+    );
   }
 }
 
@@ -178,24 +210,24 @@ class BasesState extends State<Bases> {
   Widget _buildBaseRow(String base) {
     final bool alreadyAdded = _addedBases.contains(base);
     return ListTile(
-      title: Text(
-        base,
-        style: _biggerFont,
-      ),
-      trailing: Icon(
-        alreadyAdded ? Icons.add_circle : Icons.add_circle_outline,
-        color: alreadyAdded ? Color.fromRGBO(249, 170, 51, 1.0) : null,
-      ),
-      onTap: () {
-        setState(() {
-          if (alreadyAdded) {
-            _addedBases[0] = "";
-          }
-          else {
-            _addedBases[0] = base;
-          }
-        });
-      }
+        title: Text(
+          base,
+          style: _biggerFont,
+        ),
+        trailing: Icon(
+          alreadyAdded ? Icons.add_circle : Icons.add_circle_outline,
+          color: alreadyAdded ? Color.fromRGBO(249, 170, 51, 1.0) : null,
+        ),
+        onTap: () {
+          setState(() {
+            if (alreadyAdded) {
+              _addedBases[0] = "";
+            }
+            else {
+              _addedBases[0] = base;
+            }
+          });
+        }
     );
   }
 }
@@ -211,19 +243,19 @@ class Bases extends StatefulWidget {
 class SelectFruit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
-        body: Center(
-            child: Fruits()
-        ),
-        floatingActionButton: FloatingActionButton (
-          backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
-          onPressed: () {
-            Navigator.pushNamed(context, '/fourth');
-          },
-          tooltip: 'Select Bases',
-          child: Icon(Icons.check),
-        ),
-      );
+    return Scaffold(
+      body: Center(
+          child: Fruits()
+      ),
+      floatingActionButton: FloatingActionButton (
+        backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
+        onPressed: () {
+          Navigator.pushNamed(context, '/fourth');
+        },
+        tooltip: 'Select Bases',
+        child: Icon(Icons.check),
+      ),
+    );
   }
 }
 
@@ -292,26 +324,26 @@ class Checkout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: Checkouts()
-        ),
-        floatingActionButton: FloatingActionButton (
-          backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
-          onPressed: () {
-            var _myShake = new ShakeStruct(_name, _addedBases, _addedFruits);
-            var _myStats = new Nutritional(_stats[0]);
-            _completedShakes.add(_myShake);
-            _completedStats.add(_myStats);
-            _stats[0] = 0;
-            _name = "";
-            _addedFruits = <String>[];
-            _addedBases = <String>[""];
-            Navigator.popUntil(context, ModalRoute.withName('/'));
-          },
-          tooltip: 'Checkout',
-          child: Icon(Icons.done_all),
-        ),
-      );
+      body: Center(
+          child: Checkouts()
+      ),
+      floatingActionButton: FloatingActionButton (
+        backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
+        onPressed: () {
+          var _myShake = new ShakeStruct(_name, _addedBases, _addedFruits);
+          var _myStats = new Nutritional(_stats[0]);
+          _completedShakes.add(_myShake);
+          _completedStats.add(_myStats);
+          _stats[0] = 0;
+          _name = "";
+          _addedFruits = <String>[];
+          _addedBases = <String>[""];
+          Navigator.popUntil(context, ModalRoute.withName('/'));
+        },
+        tooltip: 'Checkout',
+        child: Icon(Icons.done_all),
+      ),
+    );
   }
 }
 
@@ -319,9 +351,9 @@ class CheckoutState extends State<Checkouts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Checkout'),
-      ),
+        appBar: AppBar(
+          title: Text('Checkout'),
+        ),
 //      body: _buildCheckout(),
         body: Column(
           children: <Widget>[
@@ -356,10 +388,10 @@ class CheckoutState extends State<Checkouts> {
 
   Widget _buildCheckoutRow(String fruit) {
     return ListTile(
-        title: Text(
-          fruit,
-          style: _biggerFont,
-        ),
+      title: Text(
+        fruit,
+        style: _biggerFont,
+      ),
     );
   }
 }
