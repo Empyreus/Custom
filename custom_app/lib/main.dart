@@ -34,9 +34,8 @@ final _completedStats = <Nutritional>[];
 final _biggerFont      = const TextStyle(fontSize: 18.0);
 
 var _name            = "";
-final _initialBase = "";
 var _addedFruits     = <String>[];
-var _addedBases      = <String>[_initialBase];
+var _addedBases      = <String>[""];
 
 
 void main() => runApp(MaterialApp(
@@ -66,6 +65,8 @@ class MyApp extends StatelessWidget {
         floatingActionButton: FloatingActionButton (
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
           onPressed: () {
+            _addedBases = <String>[""];
+            _addedFruits = <String>[];
             Navigator.pushNamed(context, '/second');
           },
           tooltip: 'Create New Smoothie',
@@ -145,16 +146,16 @@ class SelectBase extends StatelessWidget {
         floatingActionButton: FloatingActionButton (
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
           onPressed: () {
-            if(_bases[0] != _initialBase){
+            if(_addedBases[0] != ""){
               Navigator.pushNamed(context, '/third');
             }
             else{
               Fluttertoast.showToast(
-                  msg: "This is Center Short Toast",
+                  msg: "Must Select 1 Item",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIos: 1,
-                  backgroundColor: Colors.red,
+                  backgroundColor: Colors.blueGrey,
                   textColor: Colors.white,
                   fontSize: 16.0
               );
@@ -234,7 +235,20 @@ class SelectFruit extends StatelessWidget {
         floatingActionButton: FloatingActionButton (
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
           onPressed: () {
-            Navigator.pushNamed(context, '/fourth');
+            if(_addedFruits.length != 0) {
+              Navigator.pushNamed(context, '/fourth');
+            }
+            else{
+              Fluttertoast.showToast(
+                  msg: "Must Select 1 or More Items",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIos: 1,
+                  backgroundColor: Colors.blueGrey,
+                  textColor: Colors.white,
+                  fontSize: 16.0
+              );
+            }
           },
           tooltip: 'Select Bases',
           child: Icon(Icons.check),
