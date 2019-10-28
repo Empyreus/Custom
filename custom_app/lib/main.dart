@@ -115,14 +115,15 @@ class CartState extends State<Carts> {
       builder: (context, projectSnap) {
         return ListView.builder(
             padding: const EdgeInsets.all(16.0),
-            itemCount: _size,
+            itemCount: _completedShakes.length * 2,
             itemBuilder: (context, i) {
+              debugPrint("Value");
               if (i.isOdd)
                 return Divider();
               final index = i ~/ 2;
               if (_completedShakes[index]._name == "")
                 return _buildCartRow(_completedShakes[index]._fruits[0], _completedStats[index]._cal);
-              return _buildCartRow(_read(index), _completedStats[index]._cal);
+              return _buildCartRow(_completedShakes[index]._name, _completedStats[index]._cal);
             }
         );
       }
