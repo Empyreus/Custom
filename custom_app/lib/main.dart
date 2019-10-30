@@ -1,12 +1,10 @@
 // Copyright 2018 The Flutter team. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class ShakeStruct {
-
   ShakeStruct(this._name, this._bases, this._fruits );
   var _name          = "";
   var _bases         = <String>[];
@@ -14,6 +12,7 @@ class ShakeStruct {
   var _vegtables     = <String>[];
   var _supplements   = <String>[];
 }
+
 class Nutritional {
 
   Nutritional(this._cal);
@@ -32,10 +31,11 @@ var _stats                    = [0];
 
 final _completedShakes = <ShakeStruct>[];
 final _completedStats = <Nutritional>[];
+var _quantities = <int>[];
 final _biggerFont      = const TextStyle(fontSize: 18.0);
 
 var _name            = "";
-final _initialBase = "";
+final _initialBase   = "";
 var _addedFruits     = <String>[];
 var _addedBases      = <String>[_initialBase];
 
@@ -96,6 +96,43 @@ class Cart extends StatelessWidget {
 }
 
 class CartState extends State<Carts> {
+
+  String shakeDetails(ShakeStruct s)
+  {
+    String details = "";
+    details += s._bases[0];
+    int numFruits = s._fruits.length;
+    for(int i = 0; i < numFruits; i++)
+    {
+      details += ", " + s._fruits[i];
+    }
+    return details;
+  }
+
+  String shakeName(ShakeStruct s) {
+    if(s._name == "") {
+      return s._fruits[0];
+    }
+    else {
+      return s._name;
+    }
+  }
+
+  void _incrementQuantity(int index) {
+    setState(() {
+      _quantities[index]++;
+    });
+  }
+
+  void _decrementQuantity(int index) {
+    setState(() {
+      if(_quantities[index] > 0)
+        _quantities[index]--;
+      else
+        _quantities[index] = 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,35 +148,141 @@ class CartState extends State<Carts> {
           if (i.isOdd)
             return Divider();
           final index = i ~/ 2;
-          if (_completedShakes[index]._name == "")
-            return _buildCartRow(_completedShakes[index]._fruits[0], _completedStats[index]._cal);
-          return _buildCartRow(_completedShakes[index]._name, _completedStats[index]._cal);
+          return _buildCartRow(_completedShakes[index], _completedStats[index]._cal, index);
         }
     );
   }
 
-  Widget _buildCartRow(String base, int cal) {
-    final bool alreadyAdded = _addedBases.contains(base);
-    return ListTile(
-        title: Text(
-          base + "- Calories: " + cal.toString(),
-          style: _biggerFont,
-        ),
-        trailing: Icon(
-          alreadyAdded ? Icons.add_circle : Icons.add_circle_outline,
-          color: alreadyAdded ? Color.fromRGBO(249, 170, 51, 1.0) : null,
-        ),
-        onTap: () {
-          setState(() {
-            if (alreadyAdded) {
-              _addedBases[0] = "";
-            }
-            else {
-              _addedBases[0] = base;
-            }
-          });
-        }
+  bool alreadyAdded = true;
+  Widget _buildCartRow(ShakeStruct shake, int cal, int index){//String base, int cal) {
+    return Card(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Text(
+                      shakeName(shake),
+                      style: _biggerFont,
+                    ),
+                  ],
+                ),//Shake Name
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                              "Calories"
+                          ),
+                          Text(
+                              cal.toString()
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                              "Other Stat"
+                          ),
+                          Text(
+                              "1.36"
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                              "Vegan?"
+                          ),
+                          Icon(
+                            Icons.check,
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),//
+              ],
+            ),
+          ),
+          Column(
+            children: <Widget>[
+              ButtonTheme(
+                minWidth: 10.0,
+                buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
+                child: RaisedButton(
+                  onPressed: () => _incrementQuantity(index),
+                  child: Text(
+                      '+'
+                  ),
+                ),
+              ),
+              Text(
+                "  " + _quantities[index].toString() + "  ",
+              ),
+              ButtonTheme(
+                minWidth: 10.0,
+                buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
+                child: RaisedButton(
+                  onPressed: () => _decrementQuantity(index),
+                  child: Text(
+                      '-'
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
+    /*return ListTile(
+        title:
+        subtitle: Text(
+          shakeDetails(shake),
+        ),
+        trailing: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ButtonTheme(
+              minWidth: 10.0,
+              buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
+              child: RaisedButton(
+                onPressed: () => _decrementQuantity(index),
+                child: Text(
+                  '-'
+                ),
+              ),
+            ),
+            Text(
+              "  " + _quantities[index].toString() + "  ",
+            ),
+            ButtonTheme(
+              minWidth: 10.0,
+              buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
+              child: RaisedButton(
+                onPressed: () => _incrementQuantity(index),
+                child: Text(
+                    '+'
+                ),
+              ),
+            ),
+          ],
+        ),
+        isThreeLine: true,
+    );*/
   }
 }
 
@@ -334,6 +477,7 @@ class Checkout extends StatelessWidget {
             var _myStats = new Nutritional(_stats[0]);
             _completedShakes.add(_myShake);
             _completedStats.add(_myStats);
+            _quantities.add(1);
             _stats[0] = 0;
             _name = "";
             _addedFruits = <String>[];
