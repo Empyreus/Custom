@@ -1,19 +1,18 @@
 // Copyright 2018 The Flutter team. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:custom_app/database_helpers.dart';
 
 class ShakeStruct {
-
-  ShakeStruct(this._name, this._bases, this._fruits );
+  ShakeStruct(this._name, this._bases, this._fruits, this._fruitQuantities);
   var _name          = "";
   var _bases         = <String>[];
   var _fruits        = <String>[];
   var _vegtables     = <String>[];
   var _supplements   = <String>[];
+  var _fruitQuantities = <int> [];
 }
 
 class Nutritional {
@@ -33,6 +32,8 @@ var _stats                    = [0];
 
 final _completedShakes = <ShakeStruct>[];
 final _completedStats = <Nutritional>[];
+var _quantities = <int>[];
+var _fquantities = <int>[0, 0, 0, 0, 0, 0];   //keep synced with _frts
 final _biggerFont      = const TextStyle(fontSize: 18.0);
 
 var _name            = "";
@@ -98,6 +99,43 @@ class Cart extends StatelessWidget {
 }
 
 class CartState extends State<Carts> {
+
+  String shakeDetails(ShakeStruct s)
+  {
+    String details = "";
+    details += s._bases[0];
+    int numFruits = s._fruits.length;
+    for(int i = 0; i < numFruits; i++)
+    {
+      details += ", " + s._fruits[i];
+    }
+    return details;
+  }
+
+  String shakeName(ShakeStruct s) {
+    if(s._name == "") {
+      return s._fruits[0];
+    }
+    else {
+      return s._name;
+    }
+  }
+
+  void _incrementQuantity(int index) {
+    setState(() {
+      _quantities[index]++;
+    });
+  }
+
+  void _decrementQuantity(int index) {
+    setState(() {
+      if(_quantities[index] > 0)
+        _quantities[index]--;
+      else
+        _quantities[index] = 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,9 +159,7 @@ class CartState extends State<Carts> {
               if (i.isOdd)
                 return Divider();
               final index = i ~/ 2;
-              if (_completedShakes[index]._name == "")
-                return _buildCartRow(_completedShakes[index]._fruits[0], _completedStats[index]._cal);
-              return _buildCartRow(_completedShakes[index]._name, _completedStats[index]._cal);
+              return _buildCartRow(_completedShakes[index], _completedStats[index]._cal, index);
             }
         );
       }
@@ -142,12 +178,99 @@ class CartState extends State<Carts> {
 //    );
   }
 
-  Widget _buildCartRow(String base, int cal) {
-    return ListTile(
-        title: Text(
-          base + "- Calories: " + cal.toString(),
-          style: _biggerFont,
-        ),
+  bool alreadyAdded = true;
+  Widget _buildCartRow(ShakeStruct shake, int cal, int index){//String base, int cal) {
+    return Card(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Text(
+                      shakeName(shake),
+                      style: _biggerFont,
+                    ),
+                  ],
+                ),//Shake Name
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                              "Calories"
+                          ),
+                          Text(
+                              cal.toString()
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                              "Other Stat"
+                          ),
+                          Text(
+                              "1.36"
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                              "Vegan?"
+                          ),
+                          Icon(
+                            Icons.check,
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),//
+              ],
+            ),
+          ),
+          Column(
+            children: <Widget>[
+              ButtonTheme(
+                minWidth: 10.0,
+                buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
+                child: RaisedButton(
+                  onPressed: () => _incrementQuantity(index),
+                  child: Text(
+                      '+'
+                  ),
+                ),
+              ),
+              Text(
+                "  " + _quantities[index].toString() + "  ",
+              ),
+              ButtonTheme(
+                minWidth: 10.0,
+                buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
+                child: RaisedButton(
+                  onPressed: () => _decrementQuantity(index),
+                  child: Text(
+                      '-'
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -282,6 +405,21 @@ class SelectFruit extends StatelessWidget {
 }
 
 class FruitsState extends State<Fruits> {
+  void _incrementQuantity(int index) {
+    setState(() {
+      _fquantities[index]++;
+    });
+  }
+
+  void _decrementQuantity(int index) {
+    setState(() {
+      if(_fquantities[index] > 0)
+        _fquantities[index]--;
+      else
+        _fquantities[index] = 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -295,39 +433,118 @@ class FruitsState extends State<Fruits> {
   Widget _buildFruits(){
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
-        itemCount: _fruits.length*2,
+        itemCount: _fruits.length,//*2,
         itemBuilder: (context, i) {
-          if (i.isOdd)
-            return Divider();
-          final index = i ~/ 2;
-          return _buildFruitRow(_fruits[index]);
+          //if (i.isOdd)
+            //return Divider();
+          //final index = i ~/ 2;
+          return _buildFruitRow(_fruits[i], i);
         }
     );
   }
 
-  Widget _buildFruitRow(String fruit) {
-    final bool alreadyAdded = _addedFruits.contains(fruit);
-    return ListTile(
-        title: Text(
-          fruit,
-          style: _biggerFont,
-        ),
-        trailing: Icon(
-          alreadyAdded ? Icons.check_box : Icons.check_box_outline_blank,
-          color: alreadyAdded ? Color.fromRGBO(249, 170, 51, 1.0) : null,
-        ),
-        onTap: () {
-          setState(() {
-            if (alreadyAdded) {
-              _addedFruits.remove(fruit);
-              _stats[0] -= _nut[fruit]._cal;
-            }
-            else {
-              _addedFruits.add(fruit);
-              _stats[0] += _nut[fruit]._cal;
-            }
-          });
-        }
+  Widget _buildFruitRow(String fruit, int index) {
+    return Card(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Text(
+                      fruit,
+                      style: _biggerFont,
+                    ),
+                  ],
+                ),//Shake Name
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                              "Calories"
+                          ),
+                          Text(
+                              _nut[fruit]._cal.toString()
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                              "Other Stat"
+                          ),
+                          Text(
+                              "1.36"
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                              "Vegan?"
+                          ),
+                          Icon(
+                            Icons.check,
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),//
+              ],
+            ),
+          ),
+          Column(
+            children: <Widget>[
+              ButtonTheme(
+                minWidth: 10.0,
+                buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
+                child: RaisedButton(
+                  onPressed: () {
+                    if(_fquantities[index] == 0)
+                      _addedFruits.add(fruit);
+                    _incrementQuantity(index);
+                    _stats[0] += _nut[fruit]._cal;
+                  },
+                  child: Text(
+                      '+'
+                  ),
+                ),
+              ),
+              Text(
+                "  " + _fquantities[index].toString() + "  ",
+              ),
+              ButtonTheme(
+                minWidth: 10.0,
+                buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
+                child: RaisedButton(
+                  onPressed: () {
+                    _decrementQuantity(index);
+                    _stats[0] -= _nut[fruit]._cal;
+                    if(_fquantities[index] == 0)
+                      _addedFruits.remove(fruit);
+                  },
+                  child: Text(
+                      '-'
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -353,10 +570,12 @@ class Checkout extends StatelessWidget {
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
           onPressed: () {
             _save(_name, _addedBases[0], _addedFruits[0], _addedFruits[1], _addedFruits[2], "Protein");
-            var _myShake = new ShakeStruct(_name, _addedBases, _addedFruits);
+            var _myShake = new ShakeStruct(_name, _addedBases, _addedFruits, _fquantities);
             var _myStats = new Nutritional(_stats[0]);
             _completedShakes.add(_myShake);
             _completedStats.add(_myStats);
+            _quantities.add(1);
+            _fquantities = [0, 0, 0, 0, 0, 0];
             _stats[0] = 0;
             _name = "";
             _addedFruits = <String>[];
@@ -404,15 +623,26 @@ class CheckoutState extends State<Checkouts> {
           if (i.isOdd)
             return Divider();
           final index = i ~/ 2;
-          return _buildCheckoutRow(_selected[index]);
+          return _buildCheckoutRow(_selected[index], index);
         }
     );
   }
 
-  Widget _buildCheckoutRow(String fruit) {
+  String checkoutText(String fruit, int index)
+  {
+    int findex = _frts.indexOf(fruit);
+    if(findex == -1) {
+      return fruit;
+    }
+    else {
+      return fruit + " x" + _fquantities[findex].toString();
+    }
+  }
+
+  Widget _buildCheckoutRow(String fruit, int index) {
     return ListTile(
         title: Text(
-          fruit,
+          checkoutText(fruit, index),
           style: _biggerFont,
         ),
     );
