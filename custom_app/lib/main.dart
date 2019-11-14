@@ -17,18 +17,22 @@ class ShakeStruct {
 
 class Nutritional {
 
-  Nutritional(this._cal);
+  Nutritional(this._cal, this._fat, this._chol, this._carb, this._prot);
   var _cal  = 0;
+  var _fat  = 0;
+  var _chol  = 0;
+  var _carb  = 0;
+  var _prot  = 0;
 }
 
 final _bases       = <String>["Whole Milk", "Heavy Cream", "2% Milk", "Fat-Free Milk", "Soy Milk", "Almond Milk", "Coconut Milk", "Lactose Milk"];
 final _fruits      = <String>["Mangos", "Strawberries", "Bananas", "Blueberries", "Spinach", "Carrots",  ];
 final _supplements = <String>["Whey Protein", "Soy Protein", "Creatine", "Caffeine", "Greek Yogurt"];
 
-List<String> _frts            = ["Mangos", "Strawberries", "Bananas", "Blueberries", "Spinach", "Carrots"];
-List<Nutritional> _val        = [Nutritional(1), Nutritional(2), Nutritional(3), Nutritional(4), Nutritional(5), Nutritional(6),];
-Map<String, Nutritional> _nut = new Map.fromIterables(_frts, _val);
-var _stats                    = [0];
+List<String> _ing            = ["Mangos", "Strawberries", "Bananas", "Blueberries", "Spinach", "Carrots"];
+List<Nutritional> _val        = [Nutritional(1, 1, 1, 1, 1), Nutritional(2, 2, 2, 2, 2), Nutritional(3, 3, 3, 3, 3), Nutritional(4, 4, 4, 4, 4), Nutritional(5, 5, 5, 5, 5), Nutritional(6, 6, 6, 6, 6),];
+Map<String, Nutritional> _nut = new Map.fromIterables(_ing, _val);
+var _stats                    = [0, 0, 0, 0, 0];
 
 final _completedShakes = <ShakeStruct>[];
 final _completedStats = <Nutritional>[];
@@ -159,7 +163,7 @@ class CartState extends State<Carts> {
               if (i.isOdd)
                 return Divider();
               final index = i ~/ 2;
-              return _buildCartRow(_completedShakes[index], _completedStats[index]._cal, index);
+              return _buildCartRow(_completedShakes[index], _completedStats[index]._cal, _completedStats[index]._fat, _completedStats[index]._chol, index);
             }
         );
       }
@@ -179,7 +183,7 @@ class CartState extends State<Carts> {
   }
 
   bool alreadyAdded = true;
-  Widget _buildCartRow(ShakeStruct shake, int cal, int index){//String base, int cal) {
+  Widget _buildCartRow(ShakeStruct shake, int cal, int fat, int chol, int index){//String base, int cal) {
     return Card(
       child: Row(
         children: <Widget>[
@@ -216,10 +220,10 @@ class CartState extends State<Carts> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                              "Other Stat"
+                              "Fat"
                           ),
                           Text(
-                              "1.36"
+                              fat.toString()
                           ),
                         ],
                       ),
@@ -229,11 +233,11 @@ class CartState extends State<Carts> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Text(
-                              "Vegan?"
+                              "Cholesterol"
                           ),
-                          Icon(
-                            Icons.check,
-                          )
+                          Text(
+                              chol.toString()
+                          ),
                         ],
                       ),
                     ),
@@ -480,10 +484,10 @@ class FruitsState extends State<Fruits> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                              "Other Stat"
+                              "Fat"
                           ),
                           Text(
-                              "1.36"
+                              _nut[fruit]._fat.toString()
                           ),
                         ],
                       ),
@@ -493,11 +497,11 @@ class FruitsState extends State<Fruits> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Text(
-                              "Vegan?"
+                              "Cholesterol"
                           ),
-                          Icon(
-                            Icons.check,
-                          )
+                          Text(
+                              _nut[fruit]._chol.toString()
+                          ),
                         ],
                       ),
                     ),
@@ -517,6 +521,10 @@ class FruitsState extends State<Fruits> {
                       _addedFruits.add(fruit);
                     _incrementQuantity(index);
                     _stats[0] += _nut[fruit]._cal;
+                    _stats[1] += _nut[fruit]._fat;
+                    _stats[2] += _nut[fruit]._chol;
+                    _stats[3] += _nut[fruit]._carb;
+                    _stats[4] += _nut[fruit]._prot;
                   },
                   child: Text(
                       '+'
@@ -531,8 +539,14 @@ class FruitsState extends State<Fruits> {
                 buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
                 child: RaisedButton(
                   onPressed: () {
+                    if(_fquantities[index] > 0) {
+                      _stats[0] -= _nut[fruit]._cal;
+                      _stats[1] -= _nut[fruit]._fat;
+                      _stats[2] -= _nut[fruit]._chol;
+                      _stats[3] -= _nut[fruit]._carb;
+                      _stats[4] -= _nut[fruit]._prot;
+                    }
                     _decrementQuantity(index);
-                    _stats[0] -= _nut[fruit]._cal;
                     if(_fquantities[index] == 0)
                       _addedFruits.remove(fruit);
                   },
@@ -571,12 +585,16 @@ class Checkout extends StatelessWidget {
           onPressed: () {
             _save(_name, _addedBases[0], _addedFruits[0], _addedFruits[1], _addedFruits[2], "Protein");
             var _myShake = new ShakeStruct(_name, _addedBases, _addedFruits, _fquantities);
-            var _myStats = new Nutritional(_stats[0]);
+            var _myStats = new Nutritional(_stats[0], _stats[1], _stats[2], _stats[3], _stats[4]);
             _completedShakes.add(_myShake);
             _completedStats.add(_myStats);
             _quantities.add(1);
             _fquantities = [0, 0, 0, 0, 0, 0];
             _stats[0] = 0;
+            _stats[1] = 0;
+            _stats[2] = 0;
+            _stats[3] = 0;
+            _stats[4] = 0;
             _name = "";
             _addedFruits = <String>[];
             _addedBases = <String>[""];
@@ -630,7 +648,7 @@ class CheckoutState extends State<Checkouts> {
 
   String checkoutText(String fruit, int index)
   {
-    int findex = _frts.indexOf(fruit);
+    int findex = _ing.indexOf(fruit);
     if(findex == -1) {
       return fruit;
     }
