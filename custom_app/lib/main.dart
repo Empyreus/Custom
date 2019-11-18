@@ -6,13 +6,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:custom_app/database_helpers.dart';
 
 class ShakeStruct {
-  ShakeStruct(this._name, this._bases, this._fruits, this._fruitQuantities);
+  ShakeStruct(this._name, this._bases, this._fruits, this._fruitQuantities, this._stats);
   var _name          = "";
   var _bases         = <String>[];
   var _fruits        = <String>[];
   var _vegtables     = <String>[];
   var _supplements   = <String>[];
   var _fruitQuantities = <int> [];
+  var _stats = <int> [];
 }
 
 class Nutritional {
@@ -45,26 +46,24 @@ var _addedFruits     = <String>[];
 var _addedBases      = <String>[""];
 
 
-void main() => runApp(MaterialApp(
-  title: 'Named Routes Demo',
-  initialRoute: '/',
-  routes: {
-    '/': (context) => MyApp(),
-    '/second': (context) => SelectBase(),
-    '/third': (context) => SelectFruit(),
-    '/fourth': (context) => Checkout()
-  }
+void main() => runApp( MaterialApp(
+    title: 'Custom Shakes',
+    theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
+    initialRoute: '/',
+    routes: {
+      '/': (context) => MyApp(),
+      '/second': (context) => SelectBase(),
+      '/third': (context) => SelectFruit(),
+      '/fourth': (context) => Checkout()
+    }
 ));
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Custom Shakes',
-      theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
-      home: Scaffold(
+    return Scaffold(
         appBar: new AppBar(
-          title: new Text("Custom Shakes")
+            title: new Text("Custom Shakes")
         ),
         body: Center(
           child: Cart(),
@@ -79,7 +78,6 @@ class MyApp extends StatelessWidget {
           tooltip: 'Create New Smoothie',
           child: Icon(Icons.add),
         ),
-      ),
     );
   }
 }
@@ -90,14 +88,12 @@ class MyApp extends StatelessWidget {
 class Cart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Custom Shakes',
-      theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
-      home: Scaffold(
-        body: Center(
-            child: Carts(),
+    return Scaffold(
+          //title: 'Custom Shakes',
+          //theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
+          body: Center(
+          child: Carts(),
         ),
-      ),
     );
   }
 }
@@ -143,30 +139,30 @@ class CartState extends State<Carts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _buildCart(),
+      body: _buildCart(context),
     );
   }
 
-  Widget _buildCart() {
+  Widget _buildCart(BuildContext context) {
     int _size = 0;
     _databaseSize().then((val) => setState((){
       _size = val;
     }));
 
     return FutureBuilder(
-      builder: (context, projectSnap) {
-        return ListView.builder(
-            padding: const EdgeInsets.all(16.0),
-            itemCount: _completedShakes.length * 2,
-            itemBuilder: (context, i) {
-              debugPrint("Value");
-              if (i.isOdd)
-                return Divider();
-              final index = i ~/ 2;
-              return _buildCartRow(_completedShakes[index], _completedStats[index]._cal, _completedStats[index]._fat, _completedStats[index]._chol, index);
-            }
-        );
-      }
+        builder: (context, projectSnap) {
+          return ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              itemCount: _completedShakes.length * 2,
+              itemBuilder: (context, i) {
+                //debugPrint("Value");
+                if (i.isOdd)
+                  return Divider();
+                final index = i ~/ 2;
+                return _buildCartRow(_completedShakes[index], _completedStats[index]._cal, _completedStats[index]._fat, _completedStats[index]._chol, index);
+              }
+          );
+        }
     );
 //    return ListView.builder(
 //        padding: const EdgeInsets.all(16.0),
@@ -183,97 +179,129 @@ class CartState extends State<Carts> {
   }
 
   bool alreadyAdded = true;
+
+
   Widget _buildCartRow(ShakeStruct shake, int cal, int fat, int chol, int index){//String base, int cal) {
-    return Card(
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Text(
-                      shakeName(shake),
-                      style: _biggerFont,
+    return GestureDetector(
+      onTap:(){
+        print("Card " + (index+1).toString() + " tapped!");
+        _name = shake._name;
+        _addedBases = shake._bases;
+        _addedFruits = shake._fruits;
+        _stats = shake._stats;
+        _fquantities = shake._fruitQuantities;
+        //_completedShakes.remove(index);
+        //_completedStats.remove(index);
+        //_quantities.remove(index);
+        Navigator.pushNamed(
+          context,
+          '/fourth'
+        );
+      },
+      child: Card(
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+              Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Text(
+                    shakeName(shake),
+                    style: _biggerFont,
+                  ),
+                ],
+              ),//Shake Name
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                            "Calories"
+                        ),
+                        Text(
+                            cal.toString()
+                        ),
+                      ],
                     ),
-                  ],
-                ),//Shake Name
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                              "Calories"
-                          ),
-                          Text(
-                              cal.toString()
-                          ),
-                        ],
-                      ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                            "Fat"
+                        ),
+                        Text(
+                            fat.toString()
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                              "Fat"
-                          ),
-                          Text(
-                              fat.toString()
-                          ),
-                        ],
-                      ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                            "Cholesterol"
+                        ),
+                        Text(
+                            chol.toString()
+                        ),
+                      ],
                     ),
-                    Expanded(
+                  ),
+                  Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Text(
-                              "Cholesterol"
+                              "Vegan?"
                           ),
-                          Text(
-                              chol.toString()
-                          ),
+                          Icon(
+                            Icons.check,
+                          )
                         ],
                       ),
                     ),
-                  ],
-                ),//
+                    ],
+                  ),//
+                ],
+              ),
+            ),
+            Column(
+              children: <Widget>[
+                ButtonTheme(
+                  minWidth: 10.0,
+                  buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
+                  child: RaisedButton(
+                    onPressed: () => _incrementQuantity(index),
+                    child: Text(
+                        '+'
+                    ),
+                  ),
+                ),
+                Text(
+                  "  " + _quantities[index].toString() + "  ",
+                ),
+                ButtonTheme(
+                  minWidth: 10.0,
+                  buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
+                  child: RaisedButton(
+                    onPressed: () => _decrementQuantity(index),
+                    child: Text(
+                        '-'
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
-          Column(
-            children: <Widget>[
-              ButtonTheme(
-                minWidth: 10.0,
-                buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
-                child: RaisedButton(
-                  onPressed: () => _incrementQuantity(index),
-                  child: Text(
-                      '+'
-                  ),
-                ),
-              ),
-              Text(
-                "  " + _quantities[index].toString() + "  ",
-              ),
-              ButtonTheme(
-                minWidth: 10.0,
-                buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
-                child: RaisedButton(
-                  onPressed: () => _decrementQuantity(index),
-                  child: Text(
-                      '-'
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -290,32 +318,32 @@ class Carts extends StatefulWidget {
 class SelectBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
-        body: Center(
+    return Scaffold(
+      body: Center(
           child: Bases()
-        ),
-        floatingActionButton: FloatingActionButton (
-          backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
-          onPressed: () {
-            if(_addedBases[0] != ""){
-              Navigator.pushNamed(context, '/third');
-            }
-            else{
-              Fluttertoast.showToast(
-                  msg: "Must Select 1 Item",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIos: 1,
-                  backgroundColor: Colors.blueGrey,
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
-            }
-          },
-          tooltip: 'Select Bases',
-          child: Icon(Icons.check),
-        ),
-      );
+      ),
+      floatingActionButton: FloatingActionButton (
+        backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
+        onPressed: () {
+          if(_addedBases[0] != ""){
+            Navigator.pushNamed(context, '/third');
+          }
+          else{
+            Fluttertoast.showToast(
+                msg: "Must Select 1 Item",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIos: 1,
+                backgroundColor: Colors.blueGrey,
+                textColor: Colors.white,
+                fontSize: 16.0
+            );
+          }
+        },
+        tooltip: 'Select Bases',
+        child: Icon(Icons.check),
+      ),
+    );
   }
 }
 
@@ -346,24 +374,24 @@ class BasesState extends State<Bases> {
   Widget _buildBaseRow(String base) {
     final bool alreadyAdded = _addedBases.contains(base);
     return ListTile(
-      title: Text(
-        base,
-        style: _biggerFont,
-      ),
-      trailing: Icon(
-        alreadyAdded ? Icons.check_circle : Icons.add_circle_outline,
-        color: alreadyAdded ? Color.fromRGBO(249, 170, 51, 1.0) : null,
-      ),
-      onTap: () {
-        setState(() {
-          if (alreadyAdded) {
-            _addedBases[0] = "";
-          }
-          else {
-            _addedBases[0] = base;
-          }
-        });
-      }
+        title: Text(
+          base,
+          style: _biggerFont,
+        ),
+        trailing: Icon(
+          alreadyAdded ? Icons.check_circle : Icons.add_circle_outline,
+          color: alreadyAdded ? Color.fromRGBO(249, 170, 51, 1.0) : null,
+        ),
+        onTap: () {
+          setState(() {
+            if (alreadyAdded) {
+              _addedBases[0] = "";
+            }
+            else {
+              _addedBases[0] = base;
+            }
+          });
+        }
     );
   }
 }
@@ -379,32 +407,38 @@ class Bases extends StatefulWidget {
 class SelectFruit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
-        body: Center(
-            child: Fruits()
-        ),
-        floatingActionButton: FloatingActionButton (
-          backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
-          onPressed: () {
-            if(_addedFruits.length == 3) {
-              Navigator.pushNamed(context, '/fourth');
-            }
-            else{
-              Fluttertoast.showToast(
-                  msg: "Must Select 3 Items",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIos: 1,
-                  backgroundColor: Colors.blueGrey,
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
-            }
-          },
-          tooltip: 'Select Bases',
-          child: Icon(Icons.check),
-        ),
-      );
+    return Scaffold(
+      body: Center(
+          child: Fruits()
+      ),
+      floatingActionButton: FloatingActionButton (
+        backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
+        onPressed: () {
+          var totalFruits = 0;
+          var size = _fquantities.length;
+          for(int i = 0; i < size; i++)
+          {
+            totalFruits += _fquantities[i];
+          }
+          if(totalFruits == 3) {
+            Navigator.pushNamed(context, '/fourth');
+          }
+          else{
+            Fluttertoast.showToast(
+                msg: "Must Select 3 Items",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIos: 1,
+                backgroundColor: Colors.blueGrey,
+                textColor: Colors.white,
+                fontSize: 16.0
+            );
+          }
+        },
+        tooltip: 'Select Bases',
+        child: Icon(Icons.check),
+      ),
+    );
   }
 }
 
@@ -440,7 +474,7 @@ class FruitsState extends State<Fruits> {
         itemCount: _fruits.length,//*2,
         itemBuilder: (context, i) {
           //if (i.isOdd)
-            //return Divider();
+          //return Divider();
           //final index = i ~/ 2;
           return _buildFruitRow(_fruits[i], i);
         }
@@ -573,37 +607,64 @@ class Fruits extends StatefulWidget {
  */
 class Checkout extends StatelessWidget {
 
+  int newName(String name)
+  {
+    int size = _completedShakes.length;
+    if (size == -1)
+      return -1;
+    for(int i = 0; i < size; i++)
+    {
+      if(_completedShakes[i]._name.toLowerCase() == name.toLowerCase())
+      {
+        return i;
+      }
+    }
+    return -1;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: Checkouts()
-        ),
-        floatingActionButton: FloatingActionButton (
-          backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
-          onPressed: () {
-            _save(_name, _addedBases[0], _addedFruits[0], _addedFruits[1], _addedFruits[2], "Protein");
-            var _myShake = new ShakeStruct(_name, _addedBases, _addedFruits, _fquantities);
-            var _myStats = new Nutritional(_stats[0], _stats[1], _stats[2], _stats[3], _stats[4]);
+      body: Center(
+          child: Checkouts()
+      ),
+      floatingActionButton: FloatingActionButton (
+        backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
+        onPressed: () {
+          var size = _addedFruits.length;
+          for(int i = size; i < 3; i++)
+          {
+            _addedFruits.add("");
+          }
+          _save(_name, _addedBases[0], _addedFruits[0], _addedFruits[1], _addedFruits[2], "Protein");
+          var _myShake = new ShakeStruct(_name, _addedBases, _addedFruits, _fquantities, _stats);
+          var _myStats = new Nutritional(_stats[0], _stats[1], _stats[2], _stats[3], _stats[4]);
+          int alreadyMade = newName(_name);
+          if(alreadyMade == -1) {
             _completedShakes.add(_myShake);
             _completedStats.add(_myStats);
             _quantities.add(1);
-            _fquantities = [0, 0, 0, 0, 0, 0];
-            _stats[0] = 0;
-            _stats[1] = 0;
-            _stats[2] = 0;
-            _stats[3] = 0;
-            _stats[4] = 0;
-            _name = "";
-            _addedFruits = <String>[];
-            _addedBases = <String>[""];
-            Navigator.popUntil(context, ModalRoute.withName('/'));
-          },
-          tooltip: 'Checkout',
-          child: Icon(Icons.done_all),
-        ),
-      );
+          }
+          else
+          {
+            //_completedShakes[alreadyMade] = _myShake;
+            //_completedStats[alreadyMade] = _myStats;
+          }
+          _fquantities = [0, 0, 0, 0, 0, 0];
+          _stats[0] = 0;
+          _stats[1] = 0;
+          _stats[2] = 0;
+          _stats[3] = 0;
+          _stats[4] = 0;
+          _name = "";
+          _addedFruits = <String>[];
+          _addedBases = <String>[""];
+          Navigator.popUntil(context, ModalRoute.withName('/'));
+        },
+        tooltip: 'Checkout',
+        child: Icon(Icons.done_all),
+      ),
+    );
   }
 }
 
@@ -611,9 +672,9 @@ class CheckoutState extends State<Checkouts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Checkout'),
-      ),
+        appBar: AppBar(
+          title: Text('Checkout'),
+        ),
 //      body: _buildCheckout(),
         body: Column(
           children: <Widget>[
@@ -659,10 +720,10 @@ class CheckoutState extends State<Checkouts> {
 
   Widget _buildCheckoutRow(String fruit, int index) {
     return ListTile(
-        title: Text(
-          checkoutText(fruit, index),
-          style: _biggerFont,
-        ),
+      title: Text(
+        checkoutText(fruit, index),
+        style: _biggerFont,
+      ),
     );
   }
 }
@@ -717,6 +778,6 @@ _save(String name, String base, String one, String two, String three, String pro
 _databaseSize() async {
   DatabaseHelper helper = DatabaseHelper.instance;
   int size = await helper.getCount();
-  debugPrint('Databas Size: $size');
+  //debugPrint('Database Size: $size');
   return size;
 }
