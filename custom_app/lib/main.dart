@@ -678,23 +678,23 @@ class CheckoutState extends State<Checkouts> {
     );
   }
 
-  var _selected = _addedBases + _addedFruits;
 
   Widget _buildCheckout(){
+    var _selected = _addedBases;
+    for(int j = 0; j < _addedFruits.length; j++) {
+      if (_selected.contains(_addedFruits[j])) {
+      }
+      else{
+        _selected.add(_addedFruits[j]);
+        for(int k = 0; k < _selected.length; k++){
+          debugPrint(_selected[k]);
+        }
+      }
+    }
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemCount: _selected.length*2,
         itemBuilder: (context, i) {
-          for(int i = 0; i < _addedFruits.length; i++) {
-            if (_selected.contains(_addedFruits[i])) {
-            }
-            else{
-              _selected.add(_addedFruits[i]);
-              for(int j = 0; j < _selected.length; j++){
-                debugPrint(_selected[j]);
-              }
-            }
-          }
           if (i.isOdd)
             return Divider();
           final index = i ~/ 2;
@@ -705,14 +705,13 @@ class CheckoutState extends State<Checkouts> {
 
   String checkoutText(String fruit, int index)
   {
+    int findex = _ing.indexOf(fruit);
+    if(findex == -1) {
       return fruit;
-//    int findex = _ing.indexOf(fruit);
-//    if(findex == -1) {
-//      return fruit;
-//    }
-//    else {
-//      return fruit + " x" + _fquantities[findex].toString();
-//    }
+    }
+    else {
+      return fruit + " x" + _fquantities[findex].toString();
+    }
   }
 
   Widget _buildCheckoutRow(String fruit, int index) {
