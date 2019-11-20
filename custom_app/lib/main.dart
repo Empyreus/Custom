@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:custom_app/database_helpers.dart';
 
+const PrimaryColor = Color.fromRGBO(74, 101, 114, 1.0);
+
 class ShakeStruct {
   ShakeStruct(this._name, this._bases, this._fruits, this._fruitQuantities);
   var _name          = "";
@@ -34,8 +36,8 @@ List<Nutritional> _val        = [Nutritional(1, 1, 1, 1, 1), Nutritional(2, 2, 2
 Map<String, Nutritional> _nut = new Map.fromIterables(_ing, _val);
 var _stats                    = [0, 0, 0, 0, 0];
 
-final _completedShakes = <ShakeStruct>[];
-final _completedStats = <Nutritional>[];
+var _completedShakes = <ShakeStruct>[];
+var _completedStats = <Nutritional>[];
 var _quantities = <int>[];
 var _fquantities = <int>[0, 0, 0, 0, 0, 0];   //keep synced with _frts
 final _biggerFont      = const TextStyle(fontSize: 18.0);
@@ -61,7 +63,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Custom Shakes',
-      theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
+      theme: new ThemeData(primaryColor: PrimaryColor),
       home: Scaffold(
         appBar: new AppBar(
           title: new Text("Custom Shakes")
@@ -69,19 +71,54 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: Cart(),
         ),
-        floatingActionButton: FloatingActionButton (
-          backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
-          onPressed: () {
-            _addedBases = <String>[""];
-            _addedFruits = <String>[];
-            Navigator.pushNamed(context, '/second');
-          },
-          tooltip: 'Create New Smoothie',
-          child: Icon(Icons.add),
-        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                FloatingActionButton.extended(
+                  backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
+                  onPressed:() {
+                    checkoutCart();
+                  },
+                  icon: Icon(Icons.done_all),
+                  label:Text("Checkout"),
+                  tooltip: 'Checkout Cart',
+                  heroTag: "btn1",
+                ),
+                FloatingActionButton.extended(
+                    backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
+                    onPressed: () {
+                      _addedBases = <String>[""];
+                      _addedFruits = <String>[];
+                      Navigator.pushNamed(context, '/second');
+                    },
+                  icon: Icon(Icons.add),
+                  label: Text("New Item"),
+                  tooltip: 'Create New Smoothie',
+                  heroTag: "btn2",
+                )
+              ]
+            )
+          )
       ),
     );
   }
+}
+
+checkoutCart(){
+  _completedShakes = <ShakeStruct>[];
+  _completedStats = <Nutritional>[];
+  Fluttertoast.showToast(
+      msg: 'Checkout Complete!',
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIos: 1,
+      backgroundColor: Colors.blueGrey,
+      textColor: Colors.white,
+      fontSize: 16.0
+  );
 }
 
 /*
@@ -90,17 +127,15 @@ class MyApp extends StatelessWidget {
 class Cart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Custom Shakes',
-      theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
-      home: Scaffold(
-        body: Center(
-            child: Carts(),
-        ),
-      ),
+    return Scaffold(
+       body: Center(
+           child: Carts(),
+       ),
     );
   }
 }
+
+
 
 class CartState extends State<Carts> {
 
@@ -159,7 +194,6 @@ class CartState extends State<Carts> {
             padding: const EdgeInsets.all(16.0),
             itemCount: _completedShakes.length * 2,
             itemBuilder: (context, i) {
-              debugPrint("Value");
               if (i.isOdd)
                 return Divider();
               final index = i ~/ 2;
@@ -325,6 +359,7 @@ class BasesState extends State<Bases> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Protein Shake Bases'),
+        backgroundColor: PrimaryColor,
       ),
       body: _buildBases(),
     );
@@ -373,6 +408,14 @@ class Bases extends StatefulWidget {
   BasesState createState() => BasesState();
 }
 
+int sumQuantity(){
+  var total = 0;
+  for(int i = 0; i < _fquantities.length; i++){
+    total = total + _fquantities[i];
+  }
+  return total;
+}
+
 /*
  * Select Fruit
  */
@@ -386,7 +429,7 @@ class SelectFruit extends StatelessWidget {
         floatingActionButton: FloatingActionButton (
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
           onPressed: () {
-            if(_addedFruits.length == 3) {
+            if(sumQuantity() == 3) {
               Navigator.pushNamed(context, '/fourth');
             }
             else{
@@ -424,11 +467,14 @@ class FruitsState extends State<Fruits> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Protein Shake Fruits'),
+        backgroundColor: PrimaryColor,
       ),
       body: _buildFruits(),
     );
@@ -517,8 +563,7 @@ class FruitsState extends State<Fruits> {
                 buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
                 child: RaisedButton(
                   onPressed: () {
-                    if(_fquantities[index] == 0)
-                      _addedFruits.add(fruit);
+                    _addedFruits.add(fruit);
                     _incrementQuantity(index);
                     _stats[0] += _nut[fruit]._cal;
                     _stats[1] += _nut[fruit]._fat;
@@ -601,7 +646,7 @@ class Checkout extends StatelessWidget {
             Navigator.popUntil(context, ModalRoute.withName('/'));
           },
           tooltip: 'Checkout',
-          child: Icon(Icons.done_all),
+          child: Icon(Icons.add_shopping_cart),
         ),
       );
   }
@@ -613,6 +658,7 @@ class CheckoutState extends State<Checkouts> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Checkout'),
+        backgroundColor: PrimaryColor,
       ),
 //      body: _buildCheckout(),
         body: Column(
@@ -631,13 +677,24 @@ class CheckoutState extends State<Checkouts> {
         )
     );
   }
-  final _selected = _addedBases + _addedFruits;
+
+  var _selected = _addedBases + _addedFruits;
 
   Widget _buildCheckout(){
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemCount: _selected.length*2,
         itemBuilder: (context, i) {
+          for(int i = 0; i < _addedFruits.length; i++) {
+            if (_selected.contains(_addedFruits[i])) {
+            }
+            else{
+              _selected.add(_addedFruits[i]);
+              for(int j = 0; j < _selected.length; j++){
+                debugPrint(_selected[j]);
+              }
+            }
+          }
           if (i.isOdd)
             return Divider();
           final index = i ~/ 2;
@@ -648,13 +705,14 @@ class CheckoutState extends State<Checkouts> {
 
   String checkoutText(String fruit, int index)
   {
-    int findex = _ing.indexOf(fruit);
-    if(findex == -1) {
       return fruit;
-    }
-    else {
-      return fruit + " x" + _fquantities[findex].toString();
-    }
+//    int findex = _ing.indexOf(fruit);
+//    if(findex == -1) {
+//      return fruit;
+//    }
+//    else {
+//      return fruit + " x" + _fquantities[findex].toString();
+//    }
   }
 
   Widget _buildCheckoutRow(String fruit, int index) {
@@ -717,6 +775,5 @@ _save(String name, String base, String one, String two, String three, String pro
 _databaseSize() async {
   DatabaseHelper helper = DatabaseHelper.instance;
   int size = await helper.getCount();
-  debugPrint('Databas Size: $size');
   return size;
 }
