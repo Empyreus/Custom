@@ -4,8 +4,64 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:custom_app/database_helpers.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 
 const PrimaryColor = Color.fromRGBO(74, 101, 114, 1.0);
+
+// Email User Name and Password
+String username = 'customshake430@gmail.com';
+String password = 'csci430!';
+
+final smtpServer = gmail(username, password);
+
+var message = Message()
+  ..from = Address(username, 'CustomShake')
+  ..recipients.add(username)
+  ..subject = 'Order Number: '
+  ..text = 'This is the plain text.';
+
+void emailTest() async {
+  //Set Order Number
+  String orderNumber = "Order Number: " + DateTime.now().millisecondsSinceEpoch.toString().substring(3,12);
+  message.subject = orderNumber;
+
+  //Set Message
+  message.text = 'Customer Shake ${DateTime.now()}\n';
+  for(int i = 0; i < _completedShakes.length; i++){
+    message.text = message.text + _completedShakes[i]._bases[0].toString() + '  ' + _completedShakes[i]._fruits.toString() + '\n';
+  }
+
+  //Send Email
+  try {
+    final sendReport = await send(message, smtpServer);
+    print('Message sent: ' + sendReport.toString());
+    Fluttertoast.showToast(
+        msg: "Message Sent.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.blueGrey,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+  } on MailerException catch (e) {
+    print('Message not sent.');
+    Fluttertoast.showToast(
+        msg: "Message not sent.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.blueGrey,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+    for (var p in e.problems) {
+      print('Problem: ${p.code}: ${p.msg}');
+    }
+  }
+}
+
 
 class ShakeStruct {
   ShakeStruct(this._name, this._bases, this._fruits, this._fruitQuantities);
@@ -108,6 +164,7 @@ class MyApp extends StatelessWidget {
 }
 
 checkoutCart(){
+  emailTest();
   _completedShakes = <ShakeStruct>[];
   _completedStats = <Nutritional>[];
   Fluttertoast.showToast(
@@ -179,6 +236,7 @@ class CartState extends State<Carts> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _buildCart(),
+
     );
   }
 
@@ -686,9 +744,6 @@ class CheckoutState extends State<Checkouts> {
       }
       else{
         _selected.add(_addedFruits[j]);
-        for(int k = 0; k < _selected.length; k++){
-          debugPrint(_selected[k]);
-        }
       }
     }
     return ListView.builder(
