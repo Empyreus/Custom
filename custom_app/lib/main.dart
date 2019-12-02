@@ -10,26 +10,64 @@ import 'package:mailer/smtp_server.dart';
 const PrimaryColor = Color.fromRGBO(74, 101, 114, 1.0);
 
 // Email User Name and Password
-String username = 'customshake430@gmail.com';
+String storeusername = 'customshake430@gmail.com';
 String password = 'csci430!';
 
-final smtpServer = gmail(username, password);
+String orderNumber;
 
 var message = Message()
-  ..from = Address(username, 'CustomShake')
-  ..recipients.add(username)
+  ..from = Address(storeusername, 'CustomShake')
+  ..recipients.add(storeusername)
   ..subject = 'Order Number: '
   ..text = 'This is the plain text.';
 
-void emailTest() async {
+Future<void> _emailAlert(BuildContext context) {
+  TextEditingController _textFieldController = TextEditingController();
+
+  return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: Text('Order Receipt'),
+            content: TextField(
+                controller: _textFieldController,
+                decoration:InputDecoration(hintText: "Enter Email Address")
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Send'),
+                onPressed: () {
+                  emailTest(_textFieldController.text.toString(), 0);
+                  Navigator.of(context).pop();
+                },
+              )
+            ]
+        );
+      }
+  );
+}
+
+void emailTest(var email, int internalExternal) async {
+  var username = email;
+  message.recipients.clear();
+  message.recipients.add(username);
+
+  var smtpServer = gmail(username, password);
+
   //Set Order Number
-  String orderNumber = "Order Number: " + DateTime.now().millisecondsSinceEpoch.toString().substring(3,12);
   message.subject = orderNumber;
 
   //Set Message
-  message.text = 'Customer Shake ${DateTime.now()}\n';
-  for(int i = 0; i < _completedShakes.length; i++){
-    message.text = message.text + _completedShakes[i]._bases[0].toString() + '  ' + _completedShakes[i]._fruits.toString() + '\n';
+  if(internalExternal == 1) {
+    message.text = 'Customer Shake ${DateTime.now()}\n';
+    for (int i = 0; i < _completedShakes.length; i++) {
+      message.text =
+          message.text + _completedShakes[i]._bases[0].toString() + '  ' +
+              _completedShakes[i]._fruits.toString() + '\n';
+    }
+  }
+  else {
+    message.text = "Your order number is " + orderNumber;
   }
 
   //Send Email
@@ -136,7 +174,8 @@ class MyApp extends StatelessWidget {
                 FloatingActionButton.extended(
                   backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
                   onPressed:() {
-                    checkoutCart();
+                    orderNumber = "Order Number: " + DateTime.now().millisecondsSinceEpoch.toString().substring(3,12);
+                    checkoutCart(context);
                   },
                   icon: Icon(Icons.done_all),
                   label:Text("Checkout"),
@@ -163,8 +202,10 @@ class MyApp extends StatelessWidget {
   }
 }
 
-checkoutCart(){
-  emailTest();
+checkoutCart(BuildContext context){
+  _emailAlert(context);
+
+  emailTest(storeusername, 1);
   _completedShakes = <ShakeStruct>[];
   _completedStats = <Nutritional>[];
   Fluttertoast.showToast(
