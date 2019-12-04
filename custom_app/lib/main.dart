@@ -4,6 +4,102 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:custom_app/database_helpers.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
+
+const PrimaryColor = Color.fromRGBO(74, 101, 114, 1.0);
+
+// Email User Name and Password
+String storeusername = 'customshake430@gmail.com';
+String password = 'csci430!';
+
+String orderNumber;
+
+var message = Message()
+  ..from = Address(storeusername, 'CustomShake')
+  ..recipients.add(storeusername)
+  ..subject = 'Order Number: '
+  ..text = 'This is the plain text.';
+
+Future<void> _emailAlert(BuildContext context) {
+  TextEditingController _textFieldController = TextEditingController();
+
+  return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: Text('Order Receipt'),
+            content: TextField(
+                controller: _textFieldController,
+                decoration:InputDecoration(hintText: "Enter Email Address")
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Send'),
+                onPressed: () {
+                  emailTest(_textFieldController.text.toString(), 0);
+                  Navigator.of(context).pop();
+                },
+              )
+            ]
+        );
+      }
+  );
+}
+
+void emailTest(var email, int internalExternal) async {
+  var username = email;
+  message.recipients.clear();
+  message.recipients.add(username);
+
+  var smtpServer = gmail(username, password);
+
+  //Set Order Number
+  message.subject = orderNumber;
+
+  //Set Message
+  if(internalExternal == 1) {
+    message.text = 'Customer Shake ${DateTime.now()}\n';
+    for (int i = 0; i < _completedShakes.length; i++) {
+      message.text =
+          message.text + _completedShakes[i]._bases[0].toString() + '  ' +
+              _completedShakes[i]._fruits.toString() + '\n';
+    }
+  }
+  else {
+    message.text = "Your order number is " + orderNumber;
+  }
+
+  //Send Email
+  try {
+    final sendReport = await send(message, smtpServer);
+    print('Message sent: ' + sendReport.toString());
+    Fluttertoast.showToast(
+        msg: "Message Sent.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.blueGrey,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+  } on MailerException catch (e) {
+    print('Message not sent.');
+    Fluttertoast.showToast(
+        msg: "Message not sent.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.blueGrey,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+    for (var p in e.problems) {
+      print('Problem: ${p.code}: ${p.msg}');
+    }
+  }
+}
+
 
 class ShakeStruct {
   ShakeStruct(this._name, this._bases, this._fruits, this._fruitQuantities, this._stats);
@@ -35,8 +131,8 @@ List<Nutritional> _val        = [Nutritional(1, 1, 1, 1, 1), Nutritional(2, 2, 2
 Map<String, Nutritional> _nut = new Map.fromIterables(_ing, _val);
 var _stats                    = [0, 0, 0, 0, 0];
 
-final _completedShakes = <ShakeStruct>[];
-final _completedStats = <Nutritional>[];
+var _completedShakes = <ShakeStruct>[];
+var _completedStats = <Nutritional>[];
 var _quantities = <int>[];
 var _fquantities = <int>[0, 0, 0, 0, 0, 0];   //keep synced with _frts
 final _biggerFont      = const TextStyle(fontSize: 18.0);
@@ -62,24 +158,63 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: new AppBar(
-            title: new Text("Custom Shakes")
-        ),
-        body: Center(
-          child: Cart(),
-        ),
-        floatingActionButton: FloatingActionButton (
-          backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
-          onPressed: () {
-            _addedBases = <String>[""];
-            _addedFruits = <String>[];
-            Navigator.pushNamed(context, '/second');
-          },
-          tooltip: 'Create New Smoothie',
-          child: Icon(Icons.add),
-        ),
+      appBar: new AppBar(
+          title: new Text("Custom Shakes")
+      ),
+      body: Center(
+        child: Cart(),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            FloatingActionButton.extended(
+              backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
+              onPressed:() {
+                orderNumber = "Order Number: " + DateTime.now().millisecondsSinceEpoch.toString().substring(3,12);
+                checkoutCart(context);
+              },
+              icon: Icon(Icons.done_all),
+              label:Text("Checkout"),
+              tooltip: 'Checkout Cart',
+              heroTag: "btn1",
+            ),
+            FloatingActionButton.extended(
+                backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
+                onPressed: () {
+                  _addedBases = <String>[""];
+                  _addedFruits = <String>[];
+                  Navigator.pushNamed(context, '/second');
+                },
+              icon: Icon(Icons.add),
+              label: Text("New Item"),
+              tooltip: 'Create New Smoothie',
+              heroTag: "btn2",
+            )
+          ]
+        )
+      )
     );
   }
+}
+
+checkoutCart(BuildContext context){
+  _emailAlert(context);
+
+  emailTest(storeusername, 1);
+  _completedShakes = <ShakeStruct>[];
+  _completedStats = <Nutritional>[];
+  Fluttertoast.showToast(
+      msg: 'Checkout Complete!',
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIos: 1,
+      backgroundColor: Colors.blueGrey,
+      textColor: Colors.white,
+      fontSize: 16.0
+  );
 }
 
 /*
@@ -89,14 +224,14 @@ class Cart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          //title: 'Custom Shakes',
-          //theme: new ThemeData(primaryColor: Color.fromRGBO(74, 101, 114, 1.0)),
-          body: Center(
-          child: Carts(),
-        ),
+       body: Center(
+           child: Carts(),
+       ),
     );
   }
 }
+
+
 
 class CartState extends State<Carts> {
 
@@ -150,19 +285,18 @@ class CartState extends State<Carts> {
     }));
 
     return FutureBuilder(
-        builder: (context, projectSnap) {
-          return ListView.builder(
-              padding: const EdgeInsets.all(16.0),
-              itemCount: _completedShakes.length * 2,
-              itemBuilder: (context, i) {
-                //debugPrint("Value");
-                if (i.isOdd)
-                  return Divider();
-                final index = i ~/ 2;
-                return _buildCartRow(_completedShakes[index], _completedStats[index]._cal, _completedStats[index]._fat, _completedStats[index]._chol, index);
-              }
-          );
-        }
+      builder: (context, projectSnap) {
+        return ListView.builder(
+            padding: const EdgeInsets.all(16.0),
+            itemCount: _completedShakes.length * 2,
+            itemBuilder: (context, i) {
+              if (i.isOdd)
+                return Divider();
+              final index = i ~/ 2;
+              return _buildCartRow(_completedShakes[index], _completedStats[index]._cal, _completedStats[index]._fat, _completedStats[index]._chol, index);
+            }
+        );
+      }
     );
 //    return ListView.builder(
 //        padding: const EdgeInsets.all(16.0),
@@ -255,19 +389,7 @@ class CartState extends State<Carts> {
                       ],
                     ),
                   ),
-                  Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Text(
-                              "Vegan?"
-                          ),
-                          Icon(
-                            Icons.check,
-                          )
-                        ],
-                      ),
-                    ),
+
                     ],
                   ),//
                 ],
@@ -353,6 +475,7 @@ class BasesState extends State<Bases> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Protein Shake Bases'),
+        backgroundColor: PrimaryColor,
       ),
       body: _buildBases(),
     );
@@ -401,44 +524,47 @@ class Bases extends StatefulWidget {
   BasesState createState() => BasesState();
 }
 
+int sumQuantity(){
+  var total = 0;
+  var size = _fquantities.length;
+  for(int i = 0; i < size; i++){
+    total = total + _fquantities[i];
+  }
+  return total;
+}
+
 /*
  * Select Fruit
  */
 class SelectFruit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-          child: Fruits()
-      ),
-      floatingActionButton: FloatingActionButton (
-        backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
-        onPressed: () {
-          var totalFruits = 0;
-          var size = _fquantities.length;
-          for(int i = 0; i < size; i++)
-          {
-            totalFruits += _fquantities[i];
-          }
-          if(totalFruits == 3) {
-            Navigator.pushNamed(context, '/fourth');
-          }
-          else{
-            Fluttertoast.showToast(
-                msg: "Must Select 3 Items",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIos: 1,
-                backgroundColor: Colors.blueGrey,
-                textColor: Colors.white,
-                fontSize: 16.0
-            );
-          }
-        },
-        tooltip: 'Select Bases',
-        child: Icon(Icons.check),
-      ),
-    );
+      return Scaffold(
+        body: Center(
+            child: Fruits()
+        ),
+        floatingActionButton: FloatingActionButton (
+          backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
+          onPressed: () {
+            if(sumQuantity() == 3) {
+              Navigator.pushNamed(context, '/fourth');
+            }
+            else{
+              Fluttertoast.showToast(
+                  msg: "Must Select 3 Items",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIos: 1,
+                  backgroundColor: Colors.blueGrey,
+                  textColor: Colors.white,
+                  fontSize: 16.0
+              );
+            }
+          },
+          tooltip: 'Select Bases',
+          child: Icon(Icons.check),
+        ),
+      );
   }
 }
 
@@ -458,11 +584,14 @@ class FruitsState extends State<Fruits> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Protein Shake Fruits'),
+        backgroundColor: PrimaryColor,
       ),
       body: _buildFruits(),
     );
@@ -551,8 +680,7 @@ class FruitsState extends State<Fruits> {
                 buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
                 child: RaisedButton(
                   onPressed: () {
-                    if(_fquantities[index] == 0)
-                      _addedFruits.add(fruit);
+                    _addedFruits.add(fruit);
                     _incrementQuantity(index);
                     _stats[0] += _nut[fruit]._cal;
                     _stats[1] += _nut[fruit]._fat;
@@ -662,7 +790,7 @@ class Checkout extends StatelessWidget {
           Navigator.popUntil(context, ModalRoute.withName('/'));
         },
         tooltip: 'Checkout',
-        child: Icon(Icons.done_all),
+        child: Icon(Icons.add_shopping_cart),
       ),
     );
   }
@@ -672,9 +800,10 @@ class CheckoutState extends State<Checkouts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Checkout'),
-        ),
+      appBar: AppBar(
+        title: Text('Checkout'),
+        backgroundColor: PrimaryColor,
+      ),
 //      body: _buildCheckout(),
         body: Column(
           children: <Widget>[
@@ -692,9 +821,17 @@ class CheckoutState extends State<Checkouts> {
         )
     );
   }
-  final _selected = _addedBases + _addedFruits;
+
 
   Widget _buildCheckout(){
+    var _selected = _addedBases;
+    for(int j = 0; j < _addedFruits.length; j++) {
+      if (_selected.contains(_addedFruits[j])) {
+      }
+      else{
+        _selected.add(_addedFruits[j]);
+      }
+    }
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemCount: _selected.length*2,
@@ -778,6 +915,5 @@ _save(String name, String base, String one, String two, String three, String pro
 _databaseSize() async {
   DatabaseHelper helper = DatabaseHelper.instance;
   int size = await helper.getCount();
-  //debugPrint('Database Size: $size');
   return size;
 }
