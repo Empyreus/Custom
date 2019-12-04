@@ -52,7 +52,7 @@ void emailTest(var email, int internalExternal) async {
   message.recipients.clear();
   message.recipients.add(username);
 
-  var smtpServer = gmail(username, password);
+  var smtpServer = gmail(storeusername, password);
 
   //Set Order Number
   message.subject = orderNumber;
@@ -60,14 +60,19 @@ void emailTest(var email, int internalExternal) async {
   //Set Message
   if(internalExternal == 1) {
     message.text = 'Customer Shake ${DateTime.now()}\n';
-    for (int i = 0; i < _completedShakes.length; i++) {
-      message.text =
-          message.text + _completedShakes[i]._bases[0].toString() + '  ' +
-              _completedShakes[i]._fruits.toString() + '\n';
-    }
   }
   else {
-    message.text = "Your order number is " + orderNumber;
+    message.text = "Your order number is " + orderNumber + '\n\n';
+  }
+  for (int i = 0; i < _completedShakes.length; i++) {
+    message.text =
+    message.text + _completedShakes[i]._bases[0].toString() + '  ' +
+    _completedShakes[i]._fruits.toString() + '\n';
+  }
+
+  if(internalExternal != 1) {
+    _completedShakes = <ShakeStruct>[];
+    _completedStats = <Nutritional>[];
   }
 
   //Send Email
@@ -160,7 +165,7 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(primaryColor: PrimaryColor),
       home: Scaffold(
         appBar: new AppBar(
-          title: new Text("Custom Shakes")
+          title: new Text("Shake Cart")
         ),
         body: Center(
           child: Cart(),
@@ -206,8 +211,8 @@ checkoutCart(BuildContext context){
   _emailAlert(context);
 
   emailTest(storeusername, 1);
-  _completedShakes = <ShakeStruct>[];
-  _completedStats = <Nutritional>[];
+//  _completedShakes = <ShakeStruct>[];
+//  _completedStats = <Nutritional>[];
   Fluttertoast.showToast(
       msg: 'Checkout Complete!',
       toastLength: Toast.LENGTH_LONG,
