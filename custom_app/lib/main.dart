@@ -833,7 +833,7 @@ class CheckoutState extends State<Checkouts> {
     for(int j = 0; j < _addedFruits.length; j++) {
       if (_selected.contains(_addedFruits[j])) {
       }
-      else{
+      else if (_addedFruits[j] != ''){
         _selected.add(_addedFruits[j]);
       }
     }
@@ -849,17 +849,6 @@ class CheckoutState extends State<Checkouts> {
     );
   }
 
-  String checkoutText(String fruit, int index)
-  {
-    int findex = _ing.indexOf(fruit);
-    if(findex == -1) {
-      return fruit;
-    }
-    else {
-      return fruit + " x" + _fquantities[findex].toString();
-    }
-  }
-
   String getQuantity(String fruit) {
     int findex = _ing.indexOf(fruit);
     if(findex == -1)
@@ -868,6 +857,16 @@ class CheckoutState extends State<Checkouts> {
     }
     else {
       return _fquantities[findex].toString();
+    }
+  }
+
+  Nutritional getNutrition(String fruit) {
+    if(!_ing.contains(fruit))
+    {
+      return Nutritional(0,0,0,0,0);
+    }
+    else {
+      return _nut[fruit];
     }
   }
 
@@ -898,7 +897,7 @@ class CheckoutState extends State<Checkouts> {
                             "Calories"
                           ),
                           Text(
-                            '0'  //_nut[fruit]._cal.toString()
+                            getNutrition(fruit)._cal.toString() //_nut[fruit]._cal.toString()
                           ),
                         ],
                       ),
@@ -911,7 +910,7 @@ class CheckoutState extends State<Checkouts> {
                             "Fat"
                           ),
                           Text(
-                            '0'  //_nut[fruit]._fat.toString()
+                            getNutrition(fruit)._fat.toString()  //_nut[fruit]._fat.toString()
                           ),
                         ],
                       ),
@@ -924,7 +923,7 @@ class CheckoutState extends State<Checkouts> {
                             "Cholesterol"
                           ),
                           Text(
-                            '0'  //_nut[fruit]._chol.toString()
+                            getNutrition(fruit)._chol.toString() //_nut[fruit]._chol.toString()
                           ),
                         ],
                       ),
