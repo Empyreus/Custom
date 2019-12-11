@@ -31,8 +31,4 @@ void main() {
   test('Default Test Success', () {
     expect(true, true);
   });
-
-  test('Default Test Failure', () {
-    expect(true, false);
-  });
 }
