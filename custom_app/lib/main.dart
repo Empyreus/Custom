@@ -421,7 +421,10 @@ class CartState extends State<Carts> {
                 minWidth: 10.0,
                 buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
                 child: RaisedButton(
-                  onPressed: () => _incrementQuantity(index),
+                  onPressed: () {
+                    _incrementQuantity(index);
+                    //_completedShakes.add(shake);
+                  },
                   child: Text(
                       '+'
                   ),
@@ -434,7 +437,10 @@ class CartState extends State<Carts> {
                 minWidth: 10.0,
                 buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
                 child: RaisedButton(
-                  onPressed: () => _decrementQuantity(index),
+                  onPressed: () {
+                    _decrementQuantity(index);
+                    _completedShakes.remove(shake);
+                  },
                   child: Text(
                       '-'
                   ),
@@ -769,8 +775,7 @@ class FruitsState extends State<Fruits> {
                       _stats[4] -= _nut[fruit]._prot;
                     }
                     _decrementQuantity(index);
-                    if(_fquantities[index] == 0)
-                      _addedFruits.remove(fruit);
+                    _addedFruits.remove(fruit);
                   },
                   child: Text(
                       '-'
