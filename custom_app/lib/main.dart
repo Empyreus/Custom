@@ -302,7 +302,7 @@ class CartState extends State<Carts> {
               if (i.isOdd)
                 return Divider();
               final index = i ~/ 2;
-              return _buildCartRow(_completedShakes[index], _completedStats[index]._cal, _completedStats[index]._fat, _completedStats[index]._fib, index);
+              return _buildCartRow(_completedShakes[index], _completedStats[index]._cal, _completedStats[index]._fat, _completedStats[index]._fib, _completedStats[index]._carb, _completedStats[index]._prot,index);
             }
         );
       }
@@ -322,7 +322,7 @@ class CartState extends State<Carts> {
   }
 
   bool alreadyAdded = true;
-  Widget _buildCartRow(ShakeStruct shake, double cal, double fat, double fib, int index){//String base, int cal) {
+  Widget _buildCartRow(ShakeStruct shake, double cal, double fat, double fib, double carb, double prot, int index){//String base, int cal) {
     return Card(
       child: Row(
         children: <Widget>[
@@ -349,7 +349,7 @@ class CartState extends State<Carts> {
                               "Calories"
                           ),
                           Text(
-                              cal.toString()
+                              cal.toStringAsFixed(2)
                           ),
                         ],
                       ),
@@ -362,7 +362,7 @@ class CartState extends State<Carts> {
                               "Fat"
                           ),
                           Text(
-                              fat.toString()
+                              fat.toStringAsFixed(2)
                           ),
                         ],
                       ),
@@ -375,7 +375,37 @@ class CartState extends State<Carts> {
                               "Fiber"
                           ),
                           Text(
-                              fib.toString()
+                              fib.toStringAsFixed(2)
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),//
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                              "Carbohydrates"
+                          ),
+                          Text(
+                              carb.toStringAsFixed(2)
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                              "Protein"
+                          ),
+                          Text(
+                              prot.toStringAsFixed(2)
                           ),
                         ],
                       ),
@@ -637,7 +667,7 @@ class FruitsState extends State<Fruits> {
                               "Calories"
                           ),
                           Text(
-                              _nut[fruit]._cal.toString()
+                              _nut[fruit]._cal.toStringAsFixed(2)
                           ),
                         ],
                       ),
@@ -650,7 +680,7 @@ class FruitsState extends State<Fruits> {
                               "Fat"
                           ),
                           Text(
-                              _nut[fruit]._fat.toString()
+                              _nut[fruit]._fat.toStringAsFixed(2)
                           ),
                         ],
                       ),
@@ -663,7 +693,37 @@ class FruitsState extends State<Fruits> {
                               "Fiber"
                           ),
                           Text(
-                              _nut[fruit]._fib.toString()
+                              _nut[fruit]._fib.toStringAsFixed(2)
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),//
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                              "Carbohydrates"
+                          ),
+                          Text(
+                              _nut[fruit]._carb.toStringAsFixed(2)
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                              "Protein"
+                          ),
+                          Text(
+                              _nut[fruit]._prot.toStringAsFixed(2)
                           ),
                         ],
                       ),
