@@ -16,4 +16,4 @@ script:
   - ./flutter/bin/flutter test
 cache:
   directories:
-    - $HOME/.pub-cache/custom_app
+    - $HOME/.pub-cache/
