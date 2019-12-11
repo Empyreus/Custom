@@ -495,12 +495,24 @@ class BasesState extends State<Bases> {
         color: alreadyAdded ? Color.fromRGBO(249, 170, 51, 1.0) : null,
       ),
       onTap: () {
+        if(_addedBases[0] != ""){
+          _stats[0] -= _nut[_addedBases[0]]._cal;
+          _stats[1] -= _nut[_addedBases[0]]._fat;
+          _stats[2] -= _nut[_addedBases[0]]._fib;
+          _stats[3] -= _nut[_addedBases[0]]._carb;
+          _stats[4] -= _nut[_addedBases[0]]._prot;
+        }
         setState(() {
           if (alreadyAdded) {
             _addedBases[0] = "";
           }
           else {
             _addedBases[0] = base;
+            _stats[0] += _nut[_addedBases[0]]._cal;
+            _stats[1] += _nut[_addedBases[0]]._fat;
+            _stats[2] += _nut[_addedBases[0]]._fib;
+            _stats[3] += _nut[_addedBases[0]]._carb;
+            _stats[4] += _nut[_addedBases[0]]._prot;
           }
         });
       }
