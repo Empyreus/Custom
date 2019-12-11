@@ -422,28 +422,10 @@ class CartState extends State<Carts> {
                 buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
                 child: RaisedButton(
                   onPressed: () {
-                    _incrementQuantity(index);
-                    //_completedShakes.add(shake);
-                  },
-                  child: Text(
-                      '+'
-                  ),
-                ),
-              ),
-              Text(
-                "  " + _quantities[index].toString() + "  ",
-              ),
-              ButtonTheme(
-                minWidth: 10.0,
-                buttonColor: Color.fromRGBO(249, 170, 51, 1.0),
-                child: RaisedButton(
-                  onPressed: () {
                     _decrementQuantity(index);
                     _completedShakes.remove(shake);
                   },
-                  child: Text(
-                      '-'
-                  ),
+                  child: Icon(Icons.delete)
                 ),
               ),
             ],
