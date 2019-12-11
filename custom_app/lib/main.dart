@@ -6,6 +6,21 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:custom_app/database_helpers.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+import 'package:coveralls/coveralls.dart';
+
+/// Uploads a coverage report.
+//Future<void> main() async {
+//  try {
+//    final coverage = File('/path/to/coverage.report');
+//    await Client().upload(await coverage.readAsString());
+//    print('The report was sent successfully.');
+//  }
+//
+//  on Exception catch (err) {
+//    print('An error occurred: $err');
+//    if (err is ClientException) print('From: ${err.uri}');
+//  }
+//}
 
 const PrimaryColor = Color.fromRGBO(74, 101, 114, 1.0);
 
