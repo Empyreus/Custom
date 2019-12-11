@@ -79,15 +79,15 @@ void emailTest(var email, int internalExternal) async {
   try {
     final sendReport = await send(message, smtpServer);
     print('Message sent: ' + sendReport.toString());
-    Fluttertoast.showToast(
-        msg: "Message Sent.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.blueGrey,
-        textColor: Colors.white,
-        fontSize: 16.0
-    );
+//    Fluttertoast.showToast(
+//        msg: "Message Sent.",
+//        toastLength: Toast.LENGTH_SHORT,
+//        gravity: ToastGravity.BOTTOM,
+//        timeInSecForIos: 1,
+//        backgroundColor: Colors.blueGrey,
+//        textColor: Colors.white,
+//        fontSize: 16.0
+//    );
   } on MailerException catch (e) {
     print('Message not sent.');
     Fluttertoast.showToast(
@@ -921,15 +921,15 @@ _save(String name, String base, String one, String two, String three, String pro
 
   DatabaseHelper helper = DatabaseHelper.instance;
   int id = await helper.insert(word);
-  Fluttertoast.showToast(
-      msg: 'inserted row: $id',
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIos: 1,
-      backgroundColor: Colors.blueGrey,
-      textColor: Colors.white,
-      fontSize: 16.0
-  );
+//  Fluttertoast.showToast(
+//      msg: 'inserted row: $id',
+//      toastLength: Toast.LENGTH_SHORT,
+//      gravity: ToastGravity.BOTTOM,
+//      timeInSecForIos: 1,
+//      backgroundColor: Colors.blueGrey,
+//      textColor: Colors.white,
+//      fontSize: 16.0
+//  );
 }
 
 _databaseSize() async {
