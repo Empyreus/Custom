@@ -31,4 +31,9 @@ void main() {
   test('Default Test Success', () {
     expect(true, true);
   });
+
+  testWidgets('Checkout header', (WidgetTester tester) async {
+    await tester.pumpWidget(new MyApp());
+    expect(find.widgetWithText(AppBar, 'Shake Cart'), findsOneWidget);
+  });
 }
