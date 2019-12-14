@@ -472,225 +472,144 @@ void main() {
 
   });
 
-//  group('Cart Tests', ()
-//  {
-//    NavigatorObserver mockNavOb;
-//
-//    setUp(() {
-//      mockNavOb = MockNavigatorObserver();
-//    });
-//
-//    testWidgets('Test shake naming and navigation to cart', (WidgetTester tester) async {
-//      await tester.pumpWidget(MaterialApp(
-//        initialRoute: '/',
-//        routes: {
-//          '/': (context) => MyApp(),
-//          '/second': (context) => SelectBase(),
-//          '/third': (context) => SelectFruit(),
-//          '/fourth': (context) => Checkout()
-//        },
-//        navigatorObservers: [mockNavOb],
-//      ));
-//
-//      await tester.tap(find.text('New Item'));
-//      await tester.pumpAndSettle();
-//
-//      verify(mockNavOb.didPush(any, any));
-//
-//      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(8));
-//
-//      await tester.tap(find.text('Almond Milk'));
-//      await tester.pumpAndSettle();
-//
-//      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(7));
-//      expect(find.byIcon(Icons.check_circle), findsOneWidget);
-//
-//      await tester.tap(find.byIcon(Icons.check));
-//      await tester.pumpAndSettle();
-//
-//      verify(mockNavOb.didPush(any, any));
-//
-//      expect(find.text('Protein Shake Fruits'), findsOneWidget);
-//
-//      await tester.tap(find.byKey(Key('Increment 0')));
-//      await tester.pumpAndSettle();
-//      await tester.tap(find.byKey(Key('Increment 1')));
-//      await tester.pumpAndSettle();
-//      await tester.tap(find.byKey(Key('Increment 2')));
-//      await tester.pumpAndSettle();
-//
-//      await tester.tap(find.byIcon(Icons.check));
-//      await tester.pumpAndSettle();
-//
-//      verify(mockNavOb.didPush(any, any));
-//
-//      expect(find.text('Almond Milk'), findsOneWidget);
-//      expect(find.text('Spinach x1'), findsOneWidget);
-//      expect(find.text('Kale x1'), findsOneWidget);
-//      expect(find.text('Beets x1'), findsOneWidget);
-//
-//      //Test Here
-//
-//    });
-//
-//    testWidgets('Test that checkout adds the shake to the cart with the correct nutritional information', (WidgetTester tester) async {
-//      await tester.pumpWidget(MaterialApp(
-//        initialRoute: '/',
-//        routes: {
-//          '/': (context) => MyApp(),
-//          '/second': (context) => SelectBase(),
-//          '/third': (context) => SelectFruit(),
-//          '/fourth': (context) => Checkout()
-//        },
-//        navigatorObservers: [mockNavOb],
-//      ));
-//
-//      await tester.tap(find.text('New Item'));
-//      await tester.pumpAndSettle();
-//
-//      verify(mockNavOb.didPush(any, any));
-//
-//      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(8));
-//
-//      await tester.tap(find.text('Almond Milk'));
-//      await tester.pumpAndSettle();
-//
-//      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(7));
-//      expect(find.byIcon(Icons.check_circle), findsOneWidget);
-//
-//      await tester.tap(find.byIcon(Icons.check));
-//      await tester.pumpAndSettle();
-//
-//      verify(mockNavOb.didPush(any, any));
-//
-//      expect(find.text('Protein Shake Fruits'), findsOneWidget);
-//
-//      await tester.tap(find.byKey(Key('Increment 0')));
-//      await tester.pumpAndSettle();
-//      await tester.tap(find.byKey(Key('Increment 1')));
-//      await tester.pumpAndSettle();
-//      await tester.tap(find.byKey(Key('Increment 2')));
-//      await tester.pumpAndSettle();
-//
-//      await tester.tap(find.byIcon(Icons.check));
-//      await tester.pumpAndSettle();
-//
-//      verify(mockNavOb.didPush(any, any));
-//
-//      expect(find.text('Almond Milk'), findsOneWidget);
-//      expect(find.text('Spinach x1'), findsOneWidget);
-//      expect(find.text('Kale x1'), findsOneWidget);
-//      expect(find.text('Beets x1'), findsOneWidget);
-//
-//      //Test Here
-//
-//    });
-//
-//    testWidgets('Test that the delete a smoothie button works', (WidgetTester tester) async {
-//      await tester.pumpWidget(MaterialApp(
-//        initialRoute: '/',
-//        routes: {
-//          '/': (context) => MyApp(),
-//          '/second': (context) => SelectBase(),
-//          '/third': (context) => SelectFruit(),
-//          '/fourth': (context) => Checkout()
-//        },
-//        navigatorObservers: [mockNavOb],
-//      ));
-//
-//      await tester.tap(find.text('New Item'));
-//      await tester.pumpAndSettle();
-//
-//      verify(mockNavOb.didPush(any, any));
-//
-//      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(8));
-//
-//      await tester.tap(find.text('Almond Milk'));
-//      await tester.pumpAndSettle();
-//
-//      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(7));
-//      expect(find.byIcon(Icons.check_circle), findsOneWidget);
-//
-//      await tester.tap(find.byIcon(Icons.check));
-//      await tester.pumpAndSettle();
-//
-//      verify(mockNavOb.didPush(any, any));
-//
-//      expect(find.text('Protein Shake Fruits'), findsOneWidget);
-//
-//      await tester.tap(find.byKey(Key('Increment 0')));
-//      await tester.pumpAndSettle();
-//      await tester.tap(find.byKey(Key('Increment 1')));
-//      await tester.pumpAndSettle();
-//      await tester.tap(find.byKey(Key('Increment 2')));
-//      await tester.pumpAndSettle();
-//
-//      await tester.tap(find.byIcon(Icons.check));
-//      await tester.pumpAndSettle();
-//
-//      verify(mockNavOb.didPush(any, any));
-//
-//      expect(find.text('Almond Milk'), findsOneWidget);
-//      expect(find.text('Spinach x1'), findsOneWidget);
-//      expect(find.text('Kale x1'), findsOneWidget);
-//      expect(find.text('Beets x1'), findsOneWidget);
-//
-//      //Test Here
-//
-//    });
-//
-//    testWidgets('Test that not naming your smoothie uses the first ingredient as the name', (WidgetTester tester) async {
-//      await tester.pumpWidget(MaterialApp(
-//        initialRoute: '/',
-//        routes: {
-//          '/': (context) => MyApp(),
-//          '/second': (context) => SelectBase(),
-//          '/third': (context) => SelectFruit(),
-//          '/fourth': (context) => Checkout()
-//        },
-//        navigatorObservers: [mockNavOb],
-//      ));
-//
-//      await tester.tap(find.text('New Item'));
-//      await tester.pumpAndSettle();
-//
-//      verify(mockNavOb.didPush(any, any));
-//
-//      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(8));
-//
-//      await tester.tap(find.text('Almond Milk'));
-//      await tester.pumpAndSettle();
-//
-//      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(7));
-//      expect(find.byIcon(Icons.check_circle), findsOneWidget);
-//
-//      await tester.tap(find.byIcon(Icons.check));
-//      await tester.pumpAndSettle();
-//
-//      verify(mockNavOb.didPush(any, any));
-//
-//      expect(find.text('Protein Shake Fruits'), findsOneWidget);
-//
-//      await tester.tap(find.byKey(Key('Increment 0')));
-//      await tester.pumpAndSettle();
-//      await tester.tap(find.byKey(Key('Increment 1')));
-//      await tester.pumpAndSettle();
-//      await tester.tap(find.byKey(Key('Increment 2')));
-//      await tester.pumpAndSettle();
-//
-//      await tester.tap(find.byIcon(Icons.check));
-//      await tester.pumpAndSettle();
-//
-//      verify(mockNavOb.didPush(any, any));
-//
-//      expect(find.text('Almond Milk'), findsOneWidget);
-//      expect(find.text('Spinach x1'), findsOneWidget);
-//      expect(find.text('Kale x1'), findsOneWidget);
-//      expect(find.text('Beets x1'), findsOneWidget);
-//
-//      //Test Here
-//
-//    });
-//
-//  });
+  group('Cart Tests', () {
+    NavigatorObserver mockNavOb;
+
+    setUp(() {
+      mockNavOb = MockNavigatorObserver();
+    });
+
+    testWidgets('Test shake naming and navigation to cart', (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        initialRoute: '/',
+        routes: {
+          '/': (context) => MyApp(),
+          '/second': (context) => SelectBase(),
+          '/third': (context) => SelectFruit(),
+          '/fourth': (context) => Checkout()
+        },
+        navigatorObservers: [mockNavOb],
+      ));
+
+      await tester.tap(find.text('New Item'));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPush(any, any));
+
+      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(8));
+
+      await tester.tap(find.text('Almond Milk'));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(7));
+      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.check));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPush(any, any));
+
+      expect(find.text('Protein Shake Fruits'), findsOneWidget);
+    });
+
+    testWidgets('Test that checkout adds the shake to the cart with the correct nutritional information', (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        initialRoute: '/',
+        routes: {
+          '/': (context) => MyApp(),
+          '/second': (context) => SelectBase(),
+          '/third': (context) => SelectFruit(),
+          '/fourth': (context) => Checkout()
+        },
+        navigatorObservers: [mockNavOb],
+      ));
+
+      await tester.tap(find.text('New Item'));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPush(any, any));
+
+      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(8));
+
+      await tester.tap(find.text('Almond Milk'));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(7));
+      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.check));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPush(any, any));
+
+      expect(find.text('Protein Shake Fruits'), findsOneWidget);
+    });
+
+    testWidgets('Test that the delete a smoothie button works', (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        initialRoute: '/',
+        routes: {
+          '/': (context) => MyApp(),
+          '/second': (context) => SelectBase(),
+          '/third': (context) => SelectFruit(),
+          '/fourth': (context) => Checkout()
+        },
+        navigatorObservers: [mockNavOb],
+      ));
+
+      await tester.tap(find.text('New Item'));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPush(any, any));
+
+      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(8));
+
+      await tester.tap(find.text('Almond Milk'));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(7));
+      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.check));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPush(any, any));
+
+      expect(find.text('Protein Shake Fruits'), findsOneWidget);
+    });
+
+    testWidgets('Test that not naming your smoothie uses the first ingredient as the name', (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        initialRoute: '/',
+        routes: {
+          '/': (context) => MyApp(),
+          '/second': (context) => SelectBase(),
+          '/third': (context) => SelectFruit(),
+          '/fourth': (context) => Checkout()
+        },
+        navigatorObservers: [mockNavOb],
+      ));
+
+      await tester.tap(find.text('New Item'));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPush(any, any));
+
+      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(8));
+
+      await tester.tap(find.text('Almond Milk'));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(7));
+      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.check));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPush(any, any));
+
+      expect(find.text('Protein Shake Fruits'), findsOneWidget);
+    });
+
+  });
 }
