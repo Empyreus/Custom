@@ -56,7 +56,7 @@ var _addedBases      = <String>[""];
 
 
 void main() => runApp(MaterialApp(
-  title: 'Named Routes Demo',
+  title: 'Custom App',
   initialRoute: '/',
   routes: {
     '/': (context) => MyApp(),
@@ -743,10 +743,12 @@ class FruitsState extends State<Fruits> {
                   child: Text(
                       '+'
                   ),
+                  key: Key('Increment ' + index.toString()),
                 ),
               ),
               Text(
                 "  " + _fquantities[index].toString() + "  ",
+                key: Key('Quantity ' + index.toString()),
               ),
               ButtonTheme(
                 minWidth: 10.0,
@@ -766,6 +768,7 @@ class FruitsState extends State<Fruits> {
                   child: Text(
                       '-'
                   ),
+                  key: Key('Decrement ' + index.toString()),
                 ),
               ),
             ],
