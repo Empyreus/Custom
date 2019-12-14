@@ -9,101 +9,9 @@ import 'package:mailer/smtp_server.dart';
 
 const PrimaryColor = Color.fromRGBO(74, 101, 114, 1.0);
 
-// Email User Name and Password
-String storeusername = 'customshake430@gmail.com';
-String password = 'csci430!';
 
-String orderNumber;
 
-var message = Message()
-  ..from = Address(storeusername, 'CustomShake')
-  ..recipients.add(storeusername)
-  ..subject = 'Order Number: '
-  ..text = 'This is the plain text.';
 
-Future<void> _emailAlert(BuildContext context) {
-  TextEditingController _textFieldController = TextEditingController();
-
-  return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-            title: Text('Order Receipt'),
-            content: TextField(
-                controller: _textFieldController,
-                decoration:InputDecoration(hintText: "Enter Email Address")
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Send'),
-                onPressed: () {
-                  emailTest(_textFieldController.text.toString(), 0);
-                  Navigator.of(context).pop();
-                },
-              )
-            ]
-        );
-      }
-  );
-}
-
-void emailTest(var email, int internalExternal) async {
-  var username = email;
-  message.recipients.clear();
-  message.recipients.add(username);
-
-  var smtpServer = gmail(storeusername, password);
-
-  //Set Order Number
-  message.subject = orderNumber;
-
-  //Set Message
-  if(internalExternal == 1) {
-    message.text = 'Customer Shake ${DateTime.now()}\n';
-  }
-  else {
-    message.text = "Your order number is " + orderNumber + '\n\n';
-  }
-  for (int i = 0; i < _completedShakes.length; i++) {
-    message.text =
-    message.text + _completedShakes[i]._bases[0].toString() + '  ' +
-    _completedShakes[i]._fruits.toString() + '\n';
-  }
-
-  if(internalExternal != 1) {
-    _completedShakes = <ShakeStruct>[];
-    _completedStats = <Nutritional>[];
-  }
-
-  //Send Email
-  try {
-    final sendReport = await send(message, smtpServer);
-    print('Message sent: ' + sendReport.toString());
-//    Fluttertoast.showToast(
-//        msg: "Message Sent.",
-//        toastLength: Toast.LENGTH_SHORT,
-//        gravity: ToastGravity.BOTTOM,
-//        timeInSecForIos: 1,
-//        backgroundColor: Colors.blueGrey,
-//        textColor: Colors.white,
-//        fontSize: 16.0
-//    );
-  } on MailerException catch (e) {
-    print('Message not sent.');
-    Fluttertoast.showToast(
-        msg: "Message not sent.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.blueGrey,
-        textColor: Colors.white,
-        fontSize: 16.0
-    );
-    for (var p in e.problems) {
-      print('Problem: ${p.code}: ${p.msg}');
-    }
-  }
-}
 
 
 class ShakeStruct {
@@ -205,6 +113,102 @@ class MyApp extends StatelessWidget {
           )
       ),
     );
+  }
+}
+
+// Email User Name and Password
+String storeusername = 'customshake430@gmail.com';
+String password = 'csci430!';
+
+String orderNumber;
+
+var message = Message()
+  ..from = Address(storeusername, 'CustomShake')
+  ..recipients.add(storeusername)
+  ..subject = 'Order Number: '
+  ..text = 'This is the plain text.';
+
+Future<void> _emailAlert(BuildContext context) {
+  TextEditingController _textFieldController = TextEditingController();
+
+  return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: Text('Order Receipt'),
+            content: TextField(
+                controller: _textFieldController,
+                decoration:InputDecoration(hintText: "Enter Email Address")
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Send'),
+                onPressed: () {
+                  emailTest(_textFieldController.text.toString(), 0);
+                  Navigator.of(context).pop();
+                },
+              )
+            ]
+        );
+      }
+  );
+}
+
+void emailTest(var email, int internalExternal) async {
+  var username = email;
+  message.recipients.clear();
+  message.recipients.add(username);
+
+  var smtpServer = gmail(storeusername, password);
+
+  //Set Order Number
+  message.subject = orderNumber;
+
+  //Set Message
+  if(internalExternal == 1) {
+    message.text = 'Customer Shake ${DateTime.now()}\n';
+  }
+  else {
+    message.text = "Your order number is " + orderNumber + '\n\n';
+  }
+  for (int i = 0; i < _completedShakes.length; i++) {
+    message.text =
+        message.text + _completedShakes[i]._bases[0].toString() + '  ' +
+            _completedShakes[i]._fruits.toString() + '\n';
+  }
+
+  if(internalExternal != 1) {
+    _completedShakes = <ShakeStruct>[];
+    _completedStats = <Nutritional>[];
+  }
+
+  //Send Email
+  try {
+    final sendReport = await send(message, smtpServer);
+    print('Message sent: ' + sendReport.toString());
+//    Fluttertoast.showToast(
+//        msg: "Message Sent.",
+//        toastLength: Toast.LENGTH_SHORT,
+//        gravity: ToastGravity.BOTTOM,
+//        timeInSecForIos: 1,
+//        backgroundColor: Colors.blueGrey,
+//        textColor: Colors.white,
+//        fontSize: 16.0
+//    );
+  } on MailerException catch (e) {
+    print('Message not sent.');
+    Fluttertoast.showToast(
+        msg: "Message not sent.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.blueGrey,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+    for (var p in e.problems) {
+      print('Problem: ${p.code}: ${p.msg}');
+    }
   }
 }
 
