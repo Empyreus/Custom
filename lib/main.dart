@@ -292,10 +292,10 @@ class CartState extends State<Carts> {
   }
 
   Widget _buildCart() {
-    int _size = 0;
-    _databaseSize().then((val) => setState((){
-      _size = val;
-    }));
+//    int _size = 0;
+//    _databaseSize().then((val) => setState((){
+//      _size = val;
+//    }));
 
     return FutureBuilder(
       builder: (context, projectSnap) {
@@ -311,21 +311,8 @@ class CartState extends State<Carts> {
         );
       }
     );
-//    return ListView.builder(
-//        padding: const EdgeInsets.all(16.0),
-//        itemCount: _size,
-//        itemBuilder: (context, i) {
-//          if (i.isOdd)
-//            return Divider();
-//          final index = i ~/ 2;
-//          if (_completedShakes[index]._name == "")
-//            return _buildCartRow(_completedShakes[index]._fruits[0], _completedStats[index]._cal);
-//          return _buildCartRow(_read(index), _completedStats[index]._cal);
-//        }
-//    );
   }
 
-  bool alreadyAdded = true;
   Widget _buildCartRow(ShakeStruct shake, double cal, double fat, double fib, double carb, double prot, int index){//String base, int cal) {
     return Card(
       child: Row(
@@ -547,14 +534,6 @@ class Bases extends StatefulWidget {
   BasesState createState() => BasesState();
 }
 
-int sumQuantity(){
-  var total = 0;
-  for(int i = 0; i < _fquantities.length; i++){
-    total = total + _fquantities[i];
-  }
-  return total;
-}
-
 /*
  * Select Fruit
  */
@@ -587,6 +566,14 @@ class SelectFruit extends StatelessWidget {
           child: Icon(Icons.check),
         ),
       );
+  }
+
+  int sumQuantity(){
+    var total = 0;
+    for(int i = 0; i < _fquantities.length; i++){
+      total = total + _fquantities[i];
+    }
+    return total;
   }
 }
 
@@ -789,7 +776,6 @@ class Fruits extends StatefulWidget {
  */
 class Checkout extends StatelessWidget {
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -799,7 +785,7 @@ class Checkout extends StatelessWidget {
         floatingActionButton: FloatingActionButton (
           backgroundColor: Color.fromRGBO(249, 170, 51, 1.0),
           onPressed: () {
-            _save(_name, _addedBases[0], _addedFruits[0], _addedFruits[1], _addedFruits[2], "Protein");
+//            _save(_name, _addedBases[0], _addedFruits[0], _addedFruits[1], _addedFruits[2], "Protein");
             var _myShake = new ShakeStruct(_name, _addedBases, _addedFruits, _fquantities);
             var _myStats = new Nutritional(_stats[0], _stats[1], _stats[2], _stats[3], _stats[4]);
             _completedShakes.add(_myShake);
@@ -897,50 +883,50 @@ class Checkouts extends StatefulWidget {
   CheckoutState createState() => CheckoutState();
 }
 
-_read(int rowID) async {
-  DatabaseHelper helper = DatabaseHelper.instance;
-  int rowId = rowID;
-  Word word = await helper.queryWord(rowId);
-  if (word == null) {
-    debugPrint('read row $rowId: empty');
-  } else {
-    Fluttertoast.showToast(
-        msg: 'read row $rowId: ${word.name} ${word.one}',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.blueGrey,
-        textColor: Colors.white,
-        fontSize: 16.0
-    );
-    return '${word.name}';
-  }
-}
+//_read(int rowID) async {
+//  DatabaseHelper helper = DatabaseHelper.instance;
+//  int rowId = rowID;
+//  Word word = await helper.queryWord(rowId);
+//  if (word == null) {
+//    debugPrint('read row $rowId: empty');
+//  } else {
+//    Fluttertoast.showToast(
+//        msg: 'read row $rowId: ${word.name} ${word.one}',
+//        toastLength: Toast.LENGTH_SHORT,
+//        gravity: ToastGravity.BOTTOM,
+//        timeInSecForIos: 1,
+//        backgroundColor: Colors.blueGrey,
+//        textColor: Colors.white,
+//        fontSize: 16.0
+//    );
+//    return '${word.name}';
+//  }
+//}
 
-_save(String name, String base, String one, String two, String three, String protein) async {
-  Word word = Word();
-  word.name = name;
-  word.base = base;
-  word.one = one;
-  word.two = two;
-  word.three = three;
-  word.protein = protein;
+//_save(String name, String base, String one, String two, String three, String protein) async {
+//  Word word = Word();
+//  word.name = name;
+//  word.base = base;
+//  word.one = one;
+//  word.two = two;
+//  word.three = three;
+//  word.protein = protein;
+//
+//  DatabaseHelper helper = DatabaseHelper.instance;
+//  int id = await helper.insert(word);
+////  Fluttertoast.showToast(
+////      msg: 'inserted row: $id',
+////      toastLength: Toast.LENGTH_SHORT,
+////      gravity: ToastGravity.BOTTOM,
+////      timeInSecForIos: 1,
+////      backgroundColor: Colors.blueGrey,
+////      textColor: Colors.white,
+////      fontSize: 16.0
+////  );
+//}
 
-  DatabaseHelper helper = DatabaseHelper.instance;
-  int id = await helper.insert(word);
-//  Fluttertoast.showToast(
-//      msg: 'inserted row: $id',
-//      toastLength: Toast.LENGTH_SHORT,
-//      gravity: ToastGravity.BOTTOM,
-//      timeInSecForIos: 1,
-//      backgroundColor: Colors.blueGrey,
-//      textColor: Colors.white,
-//      fontSize: 16.0
-//  );
-}
-
-_databaseSize() async {
-  DatabaseHelper helper = DatabaseHelper.instance;
-  int size = await helper.getCount();
-  return size;
-}
+//_databaseSize() async {
+//  DatabaseHelper helper = DatabaseHelper.instance;
+//  int size = await helper.getCount();
+//  return size;
+//}
