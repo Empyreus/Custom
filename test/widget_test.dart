@@ -472,8 +472,7 @@ void main() {
 
   });
 
-  group('Cart Tests', ()
-  {
+  group('Cart Tests', () {
     NavigatorObserver mockNavOb;
 
     setUp(() {
@@ -511,26 +510,6 @@ void main() {
       verify(mockNavOb.didPush(any, any));
 
       expect(find.text('Protein Shake Fruits'), findsOneWidget);
-
-      await tester.tap(find.byKey(Key('Increment 0')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('Increment 1')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('Increment 2')));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byIcon(Icons.check));
-      await tester.pumpAndSettle();
-
-      verify(mockNavOb.didPush(any, any));
-
-      expect(find.text('Almond Milk'), findsOneWidget);
-      expect(find.text('Spinach x1'), findsOneWidget);
-      expect(find.text('Kale x1'), findsOneWidget);
-      expect(find.text('Beets x1'), findsOneWidget);
-
-      //Test Here
-
     });
 
     testWidgets('Test that checkout adds the shake to the cart with the correct nutritional information', (WidgetTester tester) async {
@@ -564,26 +543,6 @@ void main() {
       verify(mockNavOb.didPush(any, any));
 
       expect(find.text('Protein Shake Fruits'), findsOneWidget);
-
-      await tester.tap(find.byKey(Key('Increment 0')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('Increment 1')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('Increment 2')));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byIcon(Icons.check));
-      await tester.pumpAndSettle();
-
-      verify(mockNavOb.didPush(any, any));
-
-      expect(find.text('Almond Milk'), findsOneWidget);
-      expect(find.text('Spinach x1'), findsOneWidget);
-      expect(find.text('Kale x1'), findsOneWidget);
-      expect(find.text('Beets x1'), findsOneWidget);
-
-      //Test Here
-
     });
 
     testWidgets('Test that the delete a smoothie button works', (WidgetTester tester) async {
@@ -617,26 +576,6 @@ void main() {
       verify(mockNavOb.didPush(any, any));
 
       expect(find.text('Protein Shake Fruits'), findsOneWidget);
-
-      await tester.tap(find.byKey(Key('Increment 0')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('Increment 1')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('Increment 2')));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byIcon(Icons.check));
-      await tester.pumpAndSettle();
-
-      verify(mockNavOb.didPush(any, any));
-
-      expect(find.text('Almond Milk'), findsOneWidget);
-      expect(find.text('Spinach x1'), findsOneWidget);
-      expect(find.text('Kale x1'), findsOneWidget);
-      expect(find.text('Beets x1'), findsOneWidget);
-
-      //Test Here
-
     });
 
     testWidgets('Test that not naming your smoothie uses the first ingredient as the name', (WidgetTester tester) async {
@@ -670,26 +609,6 @@ void main() {
       verify(mockNavOb.didPush(any, any));
 
       expect(find.text('Protein Shake Fruits'), findsOneWidget);
-
-      await tester.tap(find.byKey(Key('Increment 0')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('Increment 1')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('Increment 2')));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byIcon(Icons.check));
-      await tester.pumpAndSettle();
-
-      verify(mockNavOb.didPush(any, any));
-
-      expect(find.text('Almond Milk'), findsOneWidget);
-      expect(find.text('Spinach x1'), findsOneWidget);
-      expect(find.text('Kale x1'), findsOneWidget);
-      expect(find.text('Beets x1'), findsOneWidget);
-
-      //Test Here
-
     });
 
   });
