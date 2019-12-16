@@ -668,6 +668,97 @@ void main() {
       expect(find.text('11.09'), findsOneWidget);
       expect(find.text('3.38'), findsOneWidget);
     });
+
+    testWidgets('Test that the checkout button prompts the user for an email for the order receipt', (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        initialRoute: '/',
+        routes: {
+          '/': (context) => MyApp(),
+          '/second': (context) => SelectBase(),
+          '/third': (context) => SelectFruit(),
+          '/fourth': (context) => Checkout()
+        },
+        navigatorObservers: [mockNavOb],
+      ));
+
+      await tester.tap(find.text('New Item'));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPush(any, any));
+
+      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(8));
+
+      await tester.tap(find.text('Almond Milk'));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(7));
+      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.check));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPush(any, any));
+
+      expect(find.text('Raspberries'), findsOneWidget);
+
+      await tester.tap(find.byKey(Key('Increment 0')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('Increment 1')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('Increment 2')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.check));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPush(any, any));
+
+      expect(find.text('Almond Milk'), findsOneWidget);
+      expect(find.text('Spinach x1'), findsOneWidget);
+      expect(find.text('Kale x1'), findsOneWidget);
+      expect(find.text('Beets x1'), findsOneWidget);
+
+      final Finder shakeNameField = find.widgetWithText(TextField, 'Enter Shake Name');
+      await tester.enterText(shakeNameField, "Test Shake");
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.add_shopping_cart));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPop(any, any));
+
+      expect(find.text('Test Shake'), findsOneWidget);
+      expect(find.text('69.00'), findsOneWidget);
+      expect(find.text('2.21'), findsOneWidget);
+      expect(find.text('3.30'), findsOneWidget);
+      expect(find.text('11.09'), findsOneWidget);
+      expect(find.text('3.38'), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.done_all));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Order Receipt'), findsOneWidget);
+
+      final Finder emailField = find.widgetWithText(TextField, 'Enter Email Address');
+      await tester.enterText(emailField, 'test@mail.customshakes.com');
+      await tester.pumpAndSettle();
+
+      expect(find.text('test@mail.customshakes.com'), findsOneWidget);
+
+      await tester.tap(find.text('Send'));
+      await tester.pumpAndSettle();
+
+      verify(mockNavOb.didPop(any, any));
+
+      /*
+      expect(find.text('Test Shake', skipOffstage: true), findsNothing);
+      expect(find.text('69.00', skipOffstage: true), findsNothing);
+      expect(find.text('2.21', skipOffstage: true), findsNothing);
+      expect(find.text('3.30', skipOffstage: true), findsNothing);
+      expect(find.text('11.09', skipOffstage: true), findsNothing);
+      expect(find.text('3.38', skipOffstage: true), findsNothing);
+      */
+    });
   });*/
 
   group('Super Test - Test everything at once', ()
@@ -810,83 +901,11 @@ void main() {
       expect(find.text('3.30'), findsNothing);
       expect(find.text('11.09'), findsNothing);
       expect(find.text('3.38'), findsNothing);
-    });
-  });
-}
-
-
-
-//Unfinished Tests
-
-/*
-
-testWidgets('Test that the checkout button prompts the user for an email for the order receipt', (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        initialRoute: '/',
-        routes: {
-          '/': (context) => MyApp(),
-          '/second': (context) => SelectBase(),
-          '/third': (context) => SelectFruit(),
-          '/fourth': (context) => Checkout()
-        },
-        navigatorObservers: [mockNavOb],
-      ));
-
-      await tester.tap(find.text('New Item'));
-      await tester.pumpAndSettle();
-
-      verify(mockNavOb.didPush(any, any));
-
-      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(8));
-
-      await tester.tap(find.text('Almond Milk'));
-      await tester.pumpAndSettle();
-
-      expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(7));
-      expect(find.byIcon(Icons.check_circle), findsOneWidget);
-
-      await tester.tap(find.byIcon(Icons.check));
-      await tester.pumpAndSettle();
-
-      verify(mockNavOb.didPush(any, any));
-
-      expect(find.text('Raspberries'), findsOneWidget);
-
-      await tester.tap(find.byKey(Key('Increment 0')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('Increment 1')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(Key('Increment 2')));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byIcon(Icons.check));
-      await tester.pumpAndSettle();
-
-      verify(mockNavOb.didPush(any, any));
-
-      expect(find.text('Almond Milk'), findsOneWidget);
-      expect(find.text('Spinach x1'), findsOneWidget);
-      expect(find.text('Kale x1'), findsOneWidget);
-      expect(find.text('Beets x1'), findsOneWidget);
-
-      final Finder shakeNameField = find.widgetWithText(TextField, 'Enter Shake Name');
-      await tester.enterText(shakeNameField, "Test Shake");
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byIcon(Icons.add_shopping_cart));
-      await tester.pumpAndSettle();
-
-      verify(mockNavOb.didPop(any, any));
-
-      expect(find.text('Test Shake'), findsOneWidget);
-      expect(find.text('69.00'), findsOneWidget);
-      expect(find.text('2.21'), findsOneWidget);
-      expect(find.text('3.30'), findsOneWidget);
-      expect(find.text('11.09'), findsOneWidget);
-      expect(find.text('3.38'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.done_all));
       await tester.pumpAndSettle();
+
+      //actual shake deleted, but can still test if email prompt is given on checkout
 
       expect(find.text('Order Receipt'), findsOneWidget);
 
@@ -899,14 +918,16 @@ testWidgets('Test that the checkout button prompts the user for an email for the
       await tester.tap(find.text('Send'));
       await tester.pumpAndSettle();
 
-      /*
-      expect(find.text('Test Shake', skipOffstage: true), findsNothing);
-      expect(find.text('69.00', skipOffstage: true), findsNothing);
-      expect(find.text('2.21', skipOffstage: true), findsNothing);
-      expect(find.text('3.30', skipOffstage: true), findsNothing);
-      expect(find.text('11.09', skipOffstage: true), findsNothing);
-      expect(find.text('3.38', skipOffstage: true), findsNothing);
-      */
+      verify(mockNavOb.didPop(any, any));
+
     });
+  });
+}
+
+
+
+//Unfinished Tests
+
+/*
 
  */
