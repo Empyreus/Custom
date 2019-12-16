@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
                     onPressed: () {
                       _addedBases = <String>[""];
                       _addedFruits = <String>[];
-
+                      _fquantities = <int>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                       Navigator.pushNamed(context, '/second');
                     },
                   icon: Icon(Icons.add),
