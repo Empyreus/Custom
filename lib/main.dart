@@ -198,7 +198,7 @@ class Cart extends StatelessWidget {
 
 class CartState extends State<Carts> {
 
-  String shakeDetails(ShakeStruct s)
+  /* shakeDetails(ShakeStruct s)
   {
     String details = "";
     details += s._bases[0];
@@ -208,7 +208,7 @@ class CartState extends State<Carts> {
       details += ", " + s._fruits[i];
     }
     return details;
-  }
+  }*/
 
   String shakeName(ShakeStruct s) {
     if(s._name == "") {
@@ -219,11 +219,11 @@ class CartState extends State<Carts> {
     }
   }
 
-  void _incrementQuantity(int index) {
+  /*void _incrementQuantity(int index) {
     setState(() {
       _quantities[index]++;
     });
-  }
+  }*/
 
   void _decrementQuantity(int index) {
     setState(() {
@@ -413,6 +413,7 @@ class SelectBase extends StatelessWidget {
           },
           tooltip: 'Select Bases',
           child: Icon(Icons.check),
+          key: Key('BasetoIng'),
         ),
       );
   }
@@ -515,6 +516,7 @@ class SelectFruit extends StatelessWidget {
           },
           tooltip: 'Select Bases',
           child: Icon(Icons.check),
+          key: Key('IngtoCO'),
         ),
       );
   }
@@ -685,7 +687,7 @@ class FruitsState extends State<Fruits> {
                 ),
               ),
               Text(
-                "  " + _fquantities[index].toString() + "  ",
+                "" + _fquantities[index].toString() + "x",
                 key: Key('Quantity ' + index.toString()),
               ),
               ButtonTheme(
