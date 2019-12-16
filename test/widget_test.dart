@@ -781,7 +781,7 @@ void main() {
         navigatorObservers: [mockNavOb],
       ));
 
-      await tester.tap(find.text('New Item'));//test
+      await tester.tap(find.text('New Item'));
       await tester.pumpAndSettle();
 
       verify(mockNavOb.didPush(any, any));
