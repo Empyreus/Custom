@@ -413,6 +413,7 @@ class SelectBase extends StatelessWidget {
           },
           tooltip: 'Select Bases',
           child: Icon(Icons.check),
+          key: Key('BasetoIng'),
         ),
       );
   }
@@ -515,6 +516,7 @@ class SelectFruit extends StatelessWidget {
           },
           tooltip: 'Select Bases',
           child: Icon(Icons.check),
+          key: Key('IngtoCO'),
         ),
       );
   }
@@ -685,7 +687,7 @@ class FruitsState extends State<Fruits> {
                 ),
               ),
               Text(
-                "  " + _fquantities[index].toString() + "  ",
+                "" + _fquantities[index].toString() + "x",
                 key: Key('Quantity ' + index.toString()),
               ),
               ButtonTheme(
