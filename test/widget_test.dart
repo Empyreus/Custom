@@ -16,7 +16,7 @@ import 'package:custom_app/main.dart';
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 void main() {
-  group('Navigation Tests', () {
+  /*group('Navigation Tests', () {
     NavigatorObserver mockNavOb;
 
     setUp(() {
@@ -850,8 +850,8 @@ void main() {
       expect(find.text('3.38', skipOffstage: true), findsNothing);
       */
     });
-  });
-/*
+  });*/
+
   group('Super Test - Test everything at once', ()
   {
     NavigatorObserver mockNavOb;
@@ -1012,5 +1012,5 @@ void main() {
       verify(mockNavOb.didPop(any, any));
 
     });
-  });*/
+  });
 }
