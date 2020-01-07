@@ -11,5 +11,5 @@ Cesar Hernandez
 Software Engineers:
 Eric Colvin
 RJ Souza
-Jacob Brolliar
+Jacob Brolliar - Sucks
 Jonathan Helder
